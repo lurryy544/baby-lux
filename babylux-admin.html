@@ -80,6 +80,8 @@
   .addp .aprev{display:none;grid-column:1/-1;width:110px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
   .addp .btnline{grid-column:1/-1;width:max-content}
   .tbl .pth{width:54px;height:40px;object-fit:cover;border-radius:8px;display:block}
+  .brandbox{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+  .brandbox__prev{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line);display:none}
 </style>
 </head>
 <body>
@@ -113,6 +115,7 @@
     <div class="tabs">
       <button class="tab is-active" data-tab="orders">Заказы</button>
       <button class="tab" data-tab="products">Товары</button>
+      <button class="tab" data-tab="brand">Логотип</button>
     </div>
 
     <section class="sec" id="tab-orders">
@@ -162,6 +165,20 @@
         </label>
         <img class="aprev" id="apPrev" alt="Предпросмотр фото">
         <button class="btnline" id="addBtn">Добавить в каталог</button>
+      </div>
+    </section>
+
+    <section class="sec" id="tab-brand" style="display:none">
+      <div class="sec__head">
+        <h2>Логотип магазина</h2>
+      </div>
+      <p class="hint">Загрузите картинку-логотип — она заменит значок на всех страницах сайта (на этом устройстве). Чтобы сменить логотип для всех покупателей, отправьте файл baby-lux-data.js — я включу его в сайт.</p>
+      <div class="brandbox">
+        <img class="brandbox__prev" id="logoPrev" alt="Текущий логотип">
+        <label class="filelab">📷 Выбрать новый логотип
+          <input id="logoFile" type="file" accept="image/*">
+        </label>
+        <button class="btnline btnline--soft" id="logoReset">Вернуть стандартный логотип</button>
       </div>
     </section>
   </div>
@@ -290,7 +307,8 @@
       clean[id] = base;
     });
     const js = '/* Baby Lux — данные каталога (сгенерировано из админки). Подключить ПЕРЕД cart.js */\n' +
-      'window.BABY_LUX_DATA = ' + JSON.stringify(clean, null, 2) + ';\n';
+      'window.BABY_LUX_DATA = ' + JSON.stringify(clean, null, 2) + ';\n' +
+      (localStorage.getItem(LOGO_KEY) ? 'window.BABY_LUX_LOGO = ' + JSON.stringify(localStorage.getItem(LOGO_KEY)) + ';\n' : '');
     const blob = new Blob([js], { type: 'application/javascript' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -320,7 +338,8 @@
       const cv = document.createElement('canvas');
       cv.width = w; cv.height = h;
       cv.getContext('2d').drawImage(img, 0, 0, w, h);
-      cb(cv.toDataURL('image/jpeg', 0.85));
+      const fmt = /png/i.test(file.type) ? 'image/png' : 'image/jpeg';
+      cb(cv.toDataURL(fmt, 0.85));
       URL.revokeObjectURL(url);
     };
     img.src = url;
@@ -357,6 +376,30 @@
     flash('Товар «' + name + '» добавлен. Нажмите «Сохранить на этом устройстве», чтобы закрепить правки.');
   });
 
+  /* ---------- Логотип ---------- */
+  const LOGO_KEY = 'babyLuxLogo';
+  function showLogoPrev() {
+    const l = localStorage.getItem(LOGO_KEY);
+    const p = document.getElementById('logoPrev');
+    if (l) { p.src = l; p.style.display = 'block'; }
+    else { p.style.display = 'none'; p.removeAttribute('src'); }
+  }
+  showLogoPrev();
+  document.getElementById('logoFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    readPhoto(f, d => {
+      localStorage.setItem(LOGO_KEY, d);
+      showLogoPrev();
+      flash('Логотип обновлён — на сайте теперь новый значок.');
+    });
+  });
+  document.getElementById('logoReset').addEventListener('click', () => {
+    localStorage.removeItem(LOGO_KEY);
+    showLogoPrev();
+    flash('Стандартный логотип восстановлен.');
+  });
+
   /* ---------- Табы ---------- */
   document.querySelectorAll('.tab').forEach(t => {
     t.addEventListener('click', () => {
@@ -364,6 +407,7 @@
       t.classList.add('is-active');
       document.getElementById('tab-orders').style.display = t.getAttribute('data-tab') === 'orders' ? '' : 'none';
       document.getElementById('tab-products').style.display = t.getAttribute('data-tab') === 'products' ? '' : 'none';
+      document.getElementById('tab-brand').style.display = t.getAttribute('data-tab') === 'brand' ? '' : 'none';
     });
   });
 })();
