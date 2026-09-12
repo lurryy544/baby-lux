@@ -94,6 +94,13 @@
   .catsub{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:2px;color:var(--primary-d);text-transform:uppercase}
   .cattitle{font-family:var(--font-head);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:1.05;margin:8px 0 10px}
   .catdesc{max-width:620px;color:var(--grey);font-size:16px;margin-bottom:26px}
+  .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+  .stroller-mini{width:clamp(70px,10vw,120px);height:auto;flex:none;margin-top:10px;
+    filter:drop-shadow(0 8px 12px rgba(120,40,0,.2));animation:hpBob 2.8s ease-in-out infinite alternate}
+  .stroller-mini .pspoke{animation:hpSpin 2.4s linear infinite}
+  @keyframes hpBob{0%{transform:translateY(0) rotate(-1.4deg)}100%{transform:translateY(-5px) rotate(1.4deg)}}
+  @keyframes hpSpin{to{transform:rotate(360deg)}}
+  @media (max-width:560px){.stroller-mini{display:none}}
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
   .chip-btn{padding:10px 20px;border-radius:99px;border:1px solid var(--line);background:#fff;font-weight:800;font-size:14px;transition:all .25s}
   .chip-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
@@ -264,10 +271,42 @@
 <!-- ============ KATALOG ============ -->
 <main class="catalog">
   <div class="container">
-    <nav class="crumbs"><a href="baby-lux-demo.html">Главная</a> / <span id="crumbCat">Каталог</span></nav>
-    <span class="catsub" id="catLabel">Каталог</span>
-    <h1 class="cattitle" id="catTitle">Каталог</h1>
-    <p class="catdesc" id="catDesc"></p>
+    <div class="pagehead">
+      <div>
+        <nav class="crumbs"><a href="baby-lux-demo.html">Главная</a> / <span id="crumbCat">Каталог</span></nav>
+        <span class="catsub" id="catLabel">Каталог</span>
+        <h1 class="cattitle" id="catTitle">Каталог</h1>
+        <p class="catdesc" id="catDesc"></p>
+      </div>
+      <svg class="stroller-mini" viewBox="0 0 200 128" fill="none" role="img" aria-label="Детская коляска">
+        <g>
+          <path d="M52 66Q44 52 32 38" stroke="#4A3F3A" stroke-width="6" stroke-linecap="round"/>
+          <g>
+            <path d="M30 70Q28 30 70 26Q108 22 114 46L114 62Q114 68 106 68L38 68Q32 68 30 62Z" fill="#F97316"/>
+            <path d="M72 60Q68 54 70 44Q74 32 92 30Q104 30 108 42Q110 46 108 50L72 60Z" fill="#FFB25E"/>
+            <path d="M60 26Q62 18 72 18Q84 18 88 26" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <path d="M40 68L106 68Q116 70 118 76Q120 82 114 84L44 84Q36 84 34 78Q32 72 40 68Z" fill="#E05A0B"/>
+          <path d="M62 84L84 96" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+          <g>
+            <circle cx="42" cy="100" r="21" fill="#4A3F3A"/>
+            <circle cx="42" cy="100" r="8.5" fill="#F97316"/>
+            <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+              <path d="M42 79V121"/><path d="M21 100H63"/><path d="M27 85L57 115"/><path d="M57 85L27 115"/>
+            </g>
+            <circle cx="42" cy="100" r="3" fill="#fff"/>
+          </g>
+          <g>
+            <circle cx="140" cy="102" r="21" fill="#4A3F3A"/>
+            <circle cx="140" cy="102" r="8.5" fill="#F97316"/>
+            <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+              <path d="M140 81V123"/><path d="M119 102H161"/><path d="M125 87L155 117"/><path d="M155 87L125 117"/>
+            </g>
+            <circle cx="140" cy="102" r="3" fill="#fff"/>
+          </g>
+        </g>
+      </svg>
+    </div>
     <div class="chips" id="catChips"></div>
     <div class="feat__grid" id="grid"></div>
   </div>
