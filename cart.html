@@ -276,7 +276,8 @@
         <div class="summary__row"><span>Доставка по Худжанду</span><b id="sumDelivery">0 сомони</b></div>
         <div class="summary__total"><span>К оплате</span><span id="sumTotal">0 сомони</span></div>
         <button class="order-btn" id="orderBtn">Оформить заказ</button>
-        <p class="hint">Оплата при получении. Подтвердим заказ в Telegram.</p>
+        <p class="hint" id="orderHint">Оплата при получении. Подтвердим заказ в Telegram.</p>
+        <p class="hint" id="guestHint" style="display:none;color:#C2410C;font-weight:800">🔒 Для заказа нужен вход или регистрация</p>
       </aside>
     </div>
 
@@ -471,7 +472,7 @@
   document.getElementById('orderBtn').addEventListener('click', () => {
     const items = BabyCart.withDetail();
     if (!items.length) return;
-    if (!BabyUser.session()) {
+    if (!BabyUser || !BabyUser.session()) {
       document.getElementById('askModal').classList.add('is-open');
       return;
     }
@@ -504,6 +505,15 @@
   document.getElementById('askLogin').addEventListener('click', () => {
     location.href = 'login.html?next=cart.html';
   });
+
+  (function initGuestHint() {
+    const guest = document.getElementById('guestHint');
+    const hint = document.getElementById('orderHint');
+    if (!window.BabyUser || !BabyUser.session()) {
+      guest.style.display = 'block';
+      hint.textContent = 'Войдите перед оформлением — займёт 30 секунд.';
+    }
+  })();
 
   function celebrateOrder() {
     const c = orderOk.getBoundingClientRect();
