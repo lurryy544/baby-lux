@@ -298,7 +298,6 @@
         <div class="summary__total"><span>К оплате</span><span id="sumTotal">0 сомони</span></div>
         <button class="order-btn" id="orderBtn">Оформить и оплатить</button>
         <p class="hint" id="orderHint">Сначала оплата картой «Душанбе Сити» — потом привезём заказ.</p>
-        <p class="hint" id="guestHint" style="display:none;color:#C2410C;font-weight:800">🔒 Для заказа нужен вход или регистрация</p>
       </aside>
     </div>
 
@@ -307,21 +306,6 @@
       <h2>Пока пусто</h2>
       <p>Загляните в каталог — там много интересного для малыша.</p>
       <a class="order-btn" href="catalog.html" style="display:inline-block;width:auto;padding:13px 28px">В каталог</a>
-    </div>
-
-    <div class="modal" id="askModal" role="dialog" aria-modal="true" aria-labelledby="askTitle">
-      <div class="modal__card">
-        <button class="modal__close" id="askClose" aria-label="Закрыть">&times;</button>
-        <div class="modal__ico">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#4A3F3A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.2-3.3 4-5 7.5-5s6.3 1.7 7.5 5"/></svg>
-        </div>
-        <h3 id="askTitle">Нужна регистрация</h3>
-        <p>Чтобы оформить заказ, войдите в аккаунт или зарегистрируйтесь — это займёт 30 секунд.</p>
-        <div class="modal__row">
-          <button class="modal__btn" id="askReg">Зарегистрироваться</button>
-          <button class="modal__btn modal__btn--soft" id="askLogin">У меня есть аккаунт</button>
-        </div>
-      </div>
     </div>
 
     <div class="ok" id="orderOk" style="display:none">
@@ -531,10 +515,6 @@
   document.getElementById('orderBtn').addEventListener('click', () => {
     const items = BabyCart.withDetail();
     if (!items.length) return;
-    if (!BabyUser || !BabyUser.session()) {
-      document.getElementById('askModal').classList.add('is-open');
-      return;
-    }
     openCheckout();
   });
 
@@ -553,7 +533,7 @@
   let bankOrderNo = '';
 
   function openCheckout() {
-    const s = BabyUser.session();
+    const s = window.BabyUser ? BabyUser.session() : null;
     document.getElementById('coName').value = (s && s.name) || '';
     document.getElementById('coPhone').value = (s && s.phone) || '';
     document.getElementById('coAddr').value = '';
@@ -636,28 +616,6 @@
     celebrateOrder();
     window.open(SUPPORT_TG + '?text=' + encodeURIComponent(tgMsg), '_blank');
   });
-
-  document.getElementById('askClose').addEventListener('click', () => {
-    document.getElementById('askModal').classList.remove('is-open');
-  });
-  document.getElementById('askModal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) document.getElementById('askModal').classList.remove('is-open');
-  });
-  document.getElementById('askReg').addEventListener('click', () => {
-    location.href = 'login.html?next=cart.html&mode=reg';
-  });
-  document.getElementById('askLogin').addEventListener('click', () => {
-    location.href = 'login.html?next=cart.html';
-  });
-
-  (function initGuestHint() {
-    const guest = document.getElementById('guestHint');
-    const hint = document.getElementById('orderHint');
-    if (!window.BabyUser || !BabyUser.session()) {
-      guest.style.display = 'block';
-      hint.textContent = 'Войдите перед оформлением — займёт 30 секунд.';
-    }
-  })();
 
   function celebrateOrder() {
     const c = orderOk.getBoundingClientRect();
