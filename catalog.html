@@ -78,6 +78,7 @@
     display:grid;place-items:center;transition:transform .2s,border-color .2s,box-shadow .2s}
   .icon-btn:hover{border-color:var(--pink);box-shadow:var(--shadow-sm)}
   .icon-btn:active{transform:scale(.93)}
+  .icon-btn.is-user{border-color:var(--primary);background:#fff}
   .cart{position:relative}
   .cart__icon,.cart__gift{display:grid;place-items:center;transition:opacity .25s,transform .25s}
   .cart__gift{position:absolute;inset:0;opacity:0;transform:scale(.4) rotate(-20deg)}
@@ -241,6 +242,9 @@
       <a class="icon-btn" href="baby-lux-demo.html" aria-label="Избранное">
         <svg width="20" height="20" viewBox="0 0 24 24"><use href="#ico-heart" stroke="#4A3F3A" stroke-width="1.8" fill="none"/></svg>
       </a>
+      <a class="icon-btn" id="userBtn" href="login.html" aria-label="Войти или зарегистрироваться">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A3F3A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.2-3.3 4-5 7.5-5s6.3 1.7 7.5 5"/></svg>
+      </a>
       <a class="icon-btn cart" id="cartBtn" href="cart.html" aria-label="Открыть корзину" aria-live="polite">
         <span class="cart__icon"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#ico-cart"/></svg></span>
         <span class="cart__gift"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F6A5C0" stroke-width="1.8"><use href="#ico-gift"/></svg></span>
@@ -294,6 +298,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="cart.js"></script>
+<script src="user.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>

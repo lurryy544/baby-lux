@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вход и регистрация — Baby Lux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2EC8E6;--primary-d:#1FA5C4;--pink:#F6A5C0;--sand:#F2E3D1;--paper:#FFFBF4;
+    --mint:#BFEBD3;--butter:#FFE29A;--lav:#D9C7F3;--cocoa:#4A3F3A;--grey:#8C7B6E;--line:#EAD9C2;
+    --shadow:0 18px 40px -18px rgba(74,63,58,.30);--shadow-sm:0 8px 20px -12px rgba(74,63,58,.25);
+    --font-head:'Baloo 2','Nunito',system-ui,Arial,sans-serif;--font-body:'Nunito',system-ui,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--cocoa);line-height:1.5;
+    min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  .topbar{max-width:1180px;margin-inline:auto;width:94vw;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo img,.logo svg{width:52px;height:52px;flex:none}
+  .logo__text{font-family:var(--font-head);font-weight:800;font-size:19px;line-height:1.05}
+  .logo__text small{display:block;font-family:var(--font-body);font-weight:700;font-size:11px;color:var(--grey);letter-spacing:1px}
+  .back{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:99px;border:1px solid var(--line);
+    background:#fff;font-weight:700;font-size:14px;transition:all .2s}
+  .back:hover{border-color:var(--primary);color:var(--primary-d)}
+
+  main{flex:1;display:grid;place-items:center;padding:20px 0 60px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);
+    width:min(440px,94vw);padding:34px 34px 30px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;inset-inline:0;top:0;height:6px;
+    background:linear-gradient(90deg,var(--pink),var(--butter),var(--mint),var(--lav),var(--primary))}
+  .card h1{font-family:var(--font-head);font-size:27px;margin-bottom:6px}
+  .card .sub{color:var(--grey);font-size:14px;margin-bottom:22px}
+  .tabs{display:flex;gap:8px;background:var(--sand);border-radius:99px;padding:5px;margin-bottom:22px}
+  .tab{flex:1;padding:10px;border-radius:99px;font-weight:800;font-size:14.5px;color:var(--grey);transition:all .22s}
+  .tab.is-active{background:#fff;color:var(--cocoa);box-shadow:var(--shadow-sm)}
+  .field{width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:15px;font-family:inherit;font-size:15px;background:var(--paper);margin-bottom:13px;transition:border-color .2s}
+  .field:focus{outline:2px solid var(--primary);border-color:var(--primary)}
+  label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+  .btn{width:100%;padding:14px;border-radius:99px;background:var(--primary);color:#fff;font-weight:800;font-size:15.5px;
+    transition:background .2s,transform .15s;margin-top:4px}
+  .btn:hover{background:var(--primary-d)}
+  .btn:active{transform:scale(.97)}
+  .msg{display:none;border-radius:14px;padding:11px 15px;font-weight:700;font-size:13.5px;margin-top:14px}
+  .msg--err{background:#FDE8E6;color:#B03A34}
+  .msg--ok{background:var(--mint);color:var(--cocoa)}
+
+  .avatar{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pink));
+    color:#fff;font-family:var(--font-head);font-weight:800;font-size:32px;display:grid;place-items:center;margin:0 auto 16px;box-shadow:var(--shadow-sm)}
+  .prof__name{text-align:center;font-family:var(--font-head);font-size:22px}
+  .prof__meta{text-align:center;color:var(--grey);font-size:14px;margin:6px 0 24px}
+  .prof .btn{margin-top:10px}
+  .ok-note{display:none;text-align:center;background:var(--mint);color:var(--cocoa);border-radius:16px;
+    padding:18px;font-weight:800;margin-top:8px}
+  .footer{margin-top:auto;padding:20px;text-align:center;font-size:12.5px;color:var(--grey)}
+  .footer a{color:var(--primary-d);font-weight:700}
+  .hint{font-size:12px;color:var(--grey);margin:-6px 0 12px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="baby-lux-demo.html">
+    <img src="baby-lux-logo.svg" alt="Bakhtovar Baby Lux" width="52" height="52">
+    <span class="logo__text">Baby Lux<small>детский магазин · Худжанд</small></span>
+  </a>
+  <a class="back" href="catalog.html">← В каталог</a>
+</div>
+
+<main>
+  <div class="card">
+    <!-- формы входа / регистрации -->
+    <div id="authView">
+      <h1 id="cardTitle">Вход</h1>
+      <p class="sub" id="cardSub">Войдите, чтобы ускорить оформление заказов.</p>
+
+      <div class="tabs">
+        <button class="tab is-active" id="tabLogin" type="button">Вход</button>
+        <button class="tab" id="tabReg" type="button">Регистрация</button>
+      </div>
+
+      <div id="regFields" style="display:none">
+        <label>Ваше имя</label>
+        <input class="field" id="fName" type="text" placeholder="Например, Дильноза">
+        <label>Телефон</label>
+        <input class="field" id="fPhone" type="tel" placeholder="92 333 6066">
+      </div>
+
+      <label>Логин (телефон или email)</label>
+      <input class="field" id="fLogin" type="text" placeholder="92 333 6066 или you@mail.tj">
+      <label>Пароль</label>
+      <input class="field" id="fPass" type="password" placeholder="••••••">
+      <div id="regPass2" style="display:none">
+        <label>Повторите пароль</label>
+        <input class="field" id="fPass2" type="password" placeholder="••••••">
+      </div>
+      <p class="hint" id="regHint" style="display:none">Регистрация занимает 30 секунд — просто заполните форму.</p>
+
+      <button class="btn" id="submitBtn">Войти</button>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <!-- личный кабинет -->
+    <div id="profView" style="display:none">
+      <div class="avatar" id="profAvatar">?</div>
+      <div class="prof__name" id="profName"></div>
+      <div class="prof__meta" id="profMeta"></div>
+      <button class="btn" id="goShopBtn">Перейти в каталог</button>
+      <button class="btn" id="logoutBtn" style="background:var(--sand);color:var(--cocoa)">Выйти</button>
+    </div>
+
+    <div class="ok-note" id="okNote">Готово! 🎉 Вы вошли.<br>Сейчас откроется каталог…</div>
+  </div>
+</main>
+
+<div class="footer">© 2026 Baby Lux · <a href="cart.html">Корзина</a> · <a href="babylux-admin.html">Для администратора</a></div>
+
+<script>
+(function () {
+  'use strict';
+  var tabLogin = document.getElementById('tabLogin');
+  var tabReg = document.getElementById('tabReg');
+  var regFields = document.getElementById('regFields');
+  var regPass2 = document.getElementById('regPass2');
+  var regHint = document.getElementById('regHint');
+  var title = document.getElementById('cardTitle');
+  var sub = document.getElementById('cardSub');
+  var btn = document.getElementById('submitBtn');
+  var msg = document.getElementById('msg');
+  var mode = 'login';
+
+  function setMode(m) {
+    mode = m;
+    tabLogin.classList.toggle('is-active', m === 'login');
+    tabReg.classList.toggle('is-active', m === 'reg');
+    regFields.style.display = m === 'reg' ? '' : 'none';
+    regPass2.style.display = m === 'reg' ? '' : 'none';
+    regHint.style.display = m === 'reg' ? '' : 'none';
+    title.textContent = m === 'reg' ? 'Регистрация' : 'Вход';
+    sub.textContent = m === 'reg' ? 'Создайте аккаунт за 30 секунд — это бесплатно.' : 'Войдите, чтобы ускорить оформление заказов.';
+    btn.textContent = m === 'reg' ? 'Зарегистрироваться' : 'Войти';
+    msg.style.display = 'none';
+  }
+  tabLogin.addEventListener('click', function () { setMode('login'); });
+  tabReg.addEventListener('click', function () { setMode('reg'); });
+
+  function show(m, text) {
+    msg.className = 'msg msg--' + m;
+    msg.textContent = text;
+    msg.style.display = 'block';
+  }
+  function valid() {
+    var login = document.getElementById('fLogin').value.trim();
+    var pass = document.getElementById('fPass').value;
+    if (mode === 'login') {
+      if (!login) return show('err', 'Введите логин');
+      if (!pass) return show('err', 'Введите пароль');
+      var r = BabyUser.login(login, pass);
+      if (!r.ok) return show('err', r.msg);
+      done();
+    } else {
+      var name = document.getElementById('fName').value.trim();
+      if (!name) return show('err', 'Укажите имя');
+      if (!login) return show('err', 'Укажите телефон или email');
+      if (pass.length < 4) return show('err', 'Пароль — минимум 4 символа');
+      if (pass !== document.getElementById('fPass2').value) return show('err', 'Пароли не совпадают');
+      var r2 = BabyUser.register({ name: name, login: login, pass: pass, phone: document.getElementById('fPhone').value.trim() });
+      if (!r2.ok) return show('err', r2.msg);
+      done();
+    }
+  }
+  function done() {
+    msg.style.display = 'none';
+    document.getElementById('authView').style.display = 'none';
+    var note = document.getElementById('okNote');
+    note.style.display = 'block';
+    var back = 'catalog.html';
+    try {
+      var ref = document.referrer;
+      if (ref && ref.indexOf('://') !== -1) {
+        var p = new URL(ref);
+        if (p.host === location.host && p.pathname.split('/').pop().indexOf('login') === -1) back = p.pathname.split('/').pop() || 'baby-lux-demo.html';
+      }
+    } catch (e) {}
+    setTimeout(function () { location.href = back; }, 1200);
+  }
+  btn.addEventListener('click', valid);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter') valid(); });
+
+  /* кабинет */
+  function showProf(u) {
+    document.getElementById('authView').style.display = 'none';
+    document.getElementById('profView').style.display = 'block';
+    document.getElementById('profAvatar').textContent = (u.name || u.login || '?').trim().charAt(0).toUpperCase();
+    document.getElementById('profName').textContent = 'Привет, ' + (u.name || u.login) + '!';
+    document.getElementById('profMeta').textContent = (u.phone || u.login);
+    document.getElementById('goShopBtn').addEventListener('click', function () { location.href = 'catalog.html'; });
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+      BabyUser.logout();
+      location.reload();
+    });
+  }
+  var s = BabyUser.session();
+  if (s) showProf(s);
+})();
+</script>
+<script src="user.js"></script>
+</body>
+</html>
