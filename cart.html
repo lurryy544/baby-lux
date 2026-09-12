@@ -100,6 +100,8 @@
   .cline{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:12px}
   .cline__thumb{width:96px;height:74px;border-radius:16px;display:grid;place-items:center;flex:none}
   .cline__thumb svg{width:60%}
+  .cline__thumb--photo{background:#fff;padding:6px}
+  .cline__thumb--photo img{width:100%;height:100%;object-fit:contain;display:block}
   .thumb1{background:linear-gradient(160deg,#F6A5C0,#E8C7EC)}
   .thumb2{background:linear-gradient(160deg,#2EC8E6,#9ADBF0)}
   .thumb3{background:linear-gradient(160deg,#FFE29A,#F6C58A)}
@@ -460,7 +462,8 @@
 
   function row(it) {
     return '<div class="cline" data-id="' + it.id + '">' +
-      '<div class="cline__thumb thumb' + it.grad + '">' + BabyCart.ICONS[it.cat] + '</div>' +
+      '<div class="cline__thumb' + (it.photo ? ' cline__thumb--photo' : ' thumb' + it.grad) + '">' +
+      (it.photo ? '<img src="' + it.photo + '" alt="">' : BabyCart.ICONS[it.cat]) + '</div>' +
       '<div class="cline__info">' +
         '<div class="cline__name">' + it.name + '</div>' +
         '<div class="cline__price">' + (it.old ? '<s style="color:#bbb;margin-right:8px">' + it.old.toLocaleString('ru-RU') + '</s>' : '') +

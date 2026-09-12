@@ -72,6 +72,14 @@
   .btnline--soft:hover{background:var(--line)}
   .okmsg{display:none;margin-top:12px;background:var(--mint);color:var(--cocoa);border-radius:14px;padding:10px 16px;font-weight:700;font-size:14px}
   .clear{display:grid;place-items:center;padding:30px;color:var(--grey);font-weight:700}
+  .addp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px;padding-top:20px;border-top:1px dashed var(--line)}
+  .addp h3{grid-column:1/-1;font-size:15px;font-weight:800}
+  .addp .field{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;font-family:inherit;font-size:14.5px;background:var(--paper)}
+  .addp .filelab{grid-column:1/-1;display:flex;align-items:center;gap:10px;background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:12px 14px;font-weight:800;font-size:13.5px;cursor:pointer}
+  .addp .filelab input{display:none}
+  .addp .aprev{display:none;grid-column:1/-1;width:110px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+  .addp .btnline{grid-column:1/-1;width:max-content}
+  .tbl .pth{width:54px;height:40px;object-fit:cover;border-radius:8px;display:block}
 </style>
 </head>
 <body>
@@ -122,7 +130,7 @@
       </div>
       <div style="overflow-x:auto">
         <table class="tbl">
-          <thead><tr><th>Название</th><th style="width:130px">Цена, сомони</th><th style="width:130px">Старая цена</th><th style="width:110px">Категория</th></tr></thead>
+          <thead><tr><th>Фото</th><th>Название</th><th style="width:120px">Цена, сомони</th><th style="width:120px">Старая цена</th><th style="width:110px">Категория</th></tr></thead>
           <tbody id="prodRows"></tbody>
         </table>
       </div>
@@ -132,9 +140,29 @@
         <button class="btnline btnline--soft" id="resetBtn">Сбросить правки</button>
       </div>
       <div class="okmsg" id="okmsg"></div>
-      <p class="hint" style="margin-top:14px">«Сохранить на этом устройстве» — правки видны на сайте в этом браузере сразу.<br>
-        «Скачать baby-lux-data.js» — файл с данными для хостинга: положите его рядом с cart.js и подключите<br>
-        <code>&lt;script src="baby-lux-data.js"&gt;&lt;/script&gt;</code> перед cart.js на всех страницах.</p>
+      <p class="hint" style="margin-top:14px">«Сохранить на этом устройстве» — правки видны на сайте сразу в этом браузере.<br>
+        «Скачать baby-lux-data.js» — файл с полными данными: пришлите его мне, и я опубликую товары для всех покупателей.</p>
+
+      <div class="addp">
+        <h3>＋ Добавить новый товар</h3>
+        <input class="field" id="apName" placeholder="Название, например «Коляска Lux Plus»">
+        <select class="field" id="apCat">
+          <option value="stroller">Коляски</option>
+          <option value="car">Машинки</option>
+          <option value="bike">Велосипеды</option>
+          <option value="crib">Кроватки</option>
+          <option value="chair">Стульчики</option>
+          <option value="acc">Аксессуары</option>
+        </select>
+        <input class="field" id="apPrice" type="number" min="0" placeholder="Цена, сомони">
+        <input class="field" id="apOld" type="number" min="0" placeholder="Старая цена (если скидка)">
+        <input class="field" id="apMeta" placeholder="Короткое описание, например «от 0 до 3 лет»">
+        <label class="filelab">📷 Фото товара с устройства
+          <input id="apPhoto" type="file" accept="image/*">
+        </label>
+        <img class="aprev" id="apPrev" alt="Предпросмотр фото">
+        <button class="btnline" id="addBtn">Добавить в каталог</button>
+      </div>
     </section>
   </div>
 </div>
@@ -199,15 +227,17 @@
   /* ---------- Товары ---------- */
   const rowsEl = document.getElementById('prodRows');
   let rows = [];
+  const REG_KEYS = Object.keys(BabyCart.registry);
   function renderProducts() {
     const ov = BabyCart.overrides();
-    rows = Object.keys(BabyCart.registry).map(id => {
-      const base = BabyCart.registry[id];
-      const o = ov[id] || base;
-      return { id: id, name: o.name, price: o.price, old: o.old, cat: base.cat };
+    rows = Array.from(new Set(REG_KEYS.concat(Object.keys(ov)))).map(id => {
+      const base = BabyCart.registry[id] || {};
+      const o = Object.assign({}, base, ov[id] || {});
+      return { id: id, name: o.name || 'Товар', price: o.price || 0, old: o.old, cat: base.cat || o.cat || 'acc', photo: o.photo || '' };
     }).sort((a, b) => a.cat.localeCompare(b.cat) || a.price - b.price);
     rowsEl.innerHTML = rows.map(r =>
       '<tr data-id="' + r.id + '">' +
+        '<td>' + (r.photo ? '<img class="pth" src="' + r.photo + '" alt="">' : '—') + '</td>' +
         '<td><input type="text" value="' + esc(r.name) + '"></td>' +
         '<td><input type="number" value="' + r.price + '" min="0"></td>' +
         '<td><input type="number" value="' + (r.old || 0) + '" min="0"></td>' +
@@ -218,6 +248,7 @@
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
 
   function collect() {
+    const prev = BabyCart.overrides();
     const map = {};
     rowsEl.querySelectorAll('tr[data-id]').forEach(tr => {
       const id = tr.getAttribute('data-id');
@@ -225,8 +256,11 @@
       const name = inputs[0].value.trim();
       const price = parseInt(inputs[1].value, 10) || 0;
       const old = parseInt(inputs[2].value, 10) || 0;
-      map[id] = { name: name, price: price };
-      if (old > 0) map[id].old = old; else map[id].old = null;
+      const d = Object.assign({}, prev[id] || {}, {});
+      if (name) d.name = name;
+      d.price = price;
+      if (old > 0) d.old = old; else delete d.old;
+      map[id] = d;
     });
     return map;
   }
@@ -249,8 +283,11 @@
     const clean = {};
     Object.keys(map).forEach(id => {
       const d = map[id];
-      clean[id] = { name: d.name, price: d.price };
-      if (d.old != null) clean[id].old = d.old;
+      const base = { name: d.name, price: d.price, cat: d.cat };
+      if (d.old != null) base.old = d.old;
+      if (d.meta) base.meta = d.meta;
+      if (d.photo) base.photo = d.photo;
+      clean[id] = base;
     });
     const js = '/* Baby Lux — данные каталога (сгенерировано из админки). Подключить ПЕРЕД cart.js */\n' +
       'window.BABY_LUX_DATA = ' + JSON.stringify(clean, null, 2) + ';\n';
@@ -260,7 +297,7 @@
     a.download = 'baby-lux-data.js';
     a.click();
     URL.revokeObjectURL(a.href);
-    flash('Файл baby-lux-data.js скачан.');
+    flash('Файл baby-lux-data.js скачан. Пришлите его — опубликую товары для всех.');
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
@@ -268,6 +305,56 @@
     BabyCart.saveOverrides({});
     renderProducts();
     flash('Правки сброшены.');
+  });
+
+  /* ---------- Добавить товар ---------- */
+  let dbPhoto = '';
+  function readPhoto(file, cb) {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX = 900;
+      const k = Math.min(1, MAX / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * k));
+      const h = Math.max(1, Math.round(img.height * k));
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      cv.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(cv.toDataURL('image/jpeg', 0.85));
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+  document.getElementById('apPhoto').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    const prev = document.getElementById('apPrev');
+    if (!f) { dbPhoto = ''; prev.style.display = 'none'; prev.src = ''; return; }
+    readPhoto(f, d => { dbPhoto = d; prev.src = d; prev.style.display = 'block'; });
+  });
+  document.getElementById('addBtn').addEventListener('click', () => {
+    const name = document.getElementById('apName').value.trim();
+    const cat = document.getElementById('apCat').value;
+    const price = parseInt(document.getElementById('apPrice').value, 10) || 0;
+    const old = parseInt(document.getElementById('apOld').value, 10) || 0;
+    const meta = document.getElementById('apMeta').value.trim();
+    if (!name) { flash('Укажите название товара.'); return; }
+    if (price <= 0) { flash('Укажите цену товара.'); return; }
+    const ov = BabyCart.overrides();
+    const id = 'user-' + String(Date.now()).slice(-7);
+    ov[id] = { cat: cat, name: name, price: price, meta: meta };
+    if (old > 0) ov[id].old = old;
+    if (dbPhoto) ov[id].photo = dbPhoto;
+    BabyCart.saveOverrides(ov);
+    document.getElementById('apName').value = '';
+    document.getElementById('apPrice').value = '';
+    document.getElementById('apOld').value = '';
+    document.getElementById('apMeta').value = '';
+    document.getElementById('apPhoto').value = '';
+    dbPhoto = '';
+    const prev = document.getElementById('apPrev');
+    prev.style.display = 'none'; prev.src = '';
+    renderProducts();
+    flash('Товар «' + name + '» добавлен. Нажмите «Сохранить на этом устройстве», чтобы закрепить правки.');
   });
 
   /* ---------- Табы ---------- */
