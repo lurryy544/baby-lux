@@ -327,9 +327,12 @@
     <div class="ok" id="orderOk" style="display:none">
       <div class="ok__mark"><svg viewBox="0 0 24 24" fill="none" stroke="#4A3F3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#ico-check"/></svg></div>
       <h2>Заказ оплачен!</h2>
-      <p>Спасибо! Мы проверим перевод карты «Душанбе Сити» и привезём заказ по адресу доставки.</p>
+      <p>Мы отправили заказ в Telegram поддержку — там подтвердите оплату, и мы привезём заказ по адресу доставки.</p>
       <span class="order-no" id="orderNo">BL-000000</span>
-      <div><a class="order-btn" href="catalog.html" style="display:inline-block;width:auto;padding:13px 28px">Продолжить покупки</a></div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a class="order-btn" id="tgBtn" href="https://t.me/Abdulloevb17" target="_blank" rel="noopener" style="display:inline-block;width:auto;padding:13px 24px;background:#28A8EA;box-shadow:0 10px 24px -10px rgba(40,168,234,.55)">Открыть поддержку</a>
+        <a class="order-btn" href="catalog.html" style="display:inline-block;width:auto;padding:13px 28px">Продолжить покупки</a>
+      </div>
     </div>
 
     <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="coTitle">
@@ -540,6 +543,8 @@
   const PAY_CARD = 'XXXX XXXX XXXX XXXX';
   const PAY_HOLDER = 'BAKHTOVAR BABYLUX';
   const PAY_PHONE = '92 333 6066';
+  const SUPPORT_TG = 'https://t.me/Abdulloevb17';
+  let lastTgMsg = '';
 
   const checkoutModal = document.getElementById('checkoutModal');
   const coForm = document.getElementById('coForm');
@@ -594,19 +599,28 @@
   document.getElementById('coPayBtn').addEventListener('click', () => {
     const items = BabyCart.withDetail();
     if (!items.length) return;
+    const name = document.getElementById('coName').value.trim();
+    const phone = document.getElementById('coPhone').value.trim();
+    const addr = document.getElementById('coAddr').value.trim();
     BabyCart.saveOrder({
       no: bankOrderNo,
       date: new Date().toLocaleString('ru-RU'),
-      customer: {
-        name: document.getElementById('coName').value.trim(),
-        phone: document.getElementById('coPhone').value.trim(),
-        addr: document.getElementById('coAddr').value.trim()
-      },
+      customer: { name: name, phone: phone, addr: addr },
       pay: 'Душанбе Сити · предоплата',
       status: 'Оплачено — ждёт подтверждения перевода',
       items: items.map(it => ({ id: it.id, name: it.name, price: it.price, qty: it.qty })),
       total: payAmount
     });
+    const tgMsg =
+      'Здравствуйте! Я оформил(а) заказ в Baby Lux 🧸' +
+      '\nЗаказ: ' + bankOrderNo +
+      '\n\nТовары:\n' +
+      items.map(it => '— ' + it.name + ' ×' + it.qty + ' = ' + (it.price * it.qty).toLocaleString('ru-RU') + ' сомони').join('\n') +
+      '\n\nИтого к оплате: ' + payAmount.toLocaleString('ru-RU') + ' сомони' +
+      '\nПлачу картой «Душанбе Сити»' +
+      '\n' + name + ' · ' + phone +
+      '\nДоставка: ' + addr;
+    lastTgMsg = tgMsg;
     BabyCart.clear();
     checkoutModal.classList.remove('is-open');
     orderWrap.style.display = 'none';
@@ -614,8 +628,13 @@
     empty.style.display = 'none';
     orderOk.style.display = 'block';
     orderOk.querySelector('#orderNo').textContent = bankOrderNo;
+    if (lastTgMsg) {
+      const tgBtn = document.getElementById('tgBtn');
+      if (tgBtn) tgBtn.href = SUPPORT_TG + '?text=' + encodeURIComponent(lastTgMsg);
+    }
     BabyCart.syncBadge();
     celebrateOrder();
+    window.open(SUPPORT_TG + '?text=' + encodeURIComponent(tgMsg), '_blank');
   });
 
   document.getElementById('askClose').addEventListener('click', () => {
