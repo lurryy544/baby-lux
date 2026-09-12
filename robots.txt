@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /babylux-admin.html
+
+Sitemap: https://lurryy544.github.io/baby-lux/sitemap.xml
