@@ -296,8 +296,8 @@
         <div class="summary__row"><span>Товары (<span id="sumCount">0</span> шт.)</span><b id="sumSubtotal">0 сомони</b></div>
         <div class="summary__row"><span>Доставка по Худжанду</span><b id="sumDelivery">0 сомони</b></div>
         <div class="summary__total"><span>К оплате</span><span id="sumTotal">0 сомони</span></div>
-        <button class="order-btn" id="orderBtn">Оформить и оплатить</button>
-        <p class="hint" id="orderHint">Сначала оплата картой «Душанбе Сити» — потом привезём заказ.</p>
+        <button class="order-btn" id="orderBtn">Оформить заказ</button>
+        <p class="hint" id="orderHint">Отправим заказ в Telegram поддержки — там подтвердим и подскажем по доставке.</p>
       </aside>
     </div>
 
@@ -310,47 +310,12 @@
 
     <div class="ok" id="orderOk" style="display:none">
       <div class="ok__mark"><svg viewBox="0 0 24 24" fill="none" stroke="#4A3F3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#ico-check"/></svg></div>
-      <h2>Заказ оплачен!</h2>
-      <p>Мы отправили заказ в Telegram поддержку — там подтвердите оплату, и мы привезём заказ по адресу доставки.</p>
+      <h2>Заказ отправлен!</h2>
+      <p>Мы получили заказ в Telegram поддержки — там договоримся об оплате и доставке.</p>
       <span class="order-no" id="orderNo">BL-000000</span>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <a class="order-btn" id="tgBtn" href="https://t.me/Abdulloevb17" target="_blank" rel="noopener" style="display:inline-block;width:auto;padding:13px 24px;background:#28A8EA;box-shadow:0 10px 24px -10px rgba(40,168,234,.55)">Открыть поддержку</a>
         <a class="order-btn" href="catalog.html" style="display:inline-block;width:auto;padding:13px 28px">Продолжить покупки</a>
-      </div>
-    </div>
-
-    <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="coTitle">
-      <div class="modal__card co">
-        <button class="modal__close" id="coClose" aria-label="Закрыть">&times;</button>
-
-        <!-- шаг 1: доставка -->
-        <div id="coForm">
-          <h3 id="coTitle">Доставка</h3>
-          <p style="color:var(--grey);font-size:14px;margin-bottom:18px">Сначала оплата, потом доставка. Сейчас заполните адрес — после оплаты привезём заказ до двери.</p>
-          <label>Как вас зовут</label>
-          <input class="co-field" id="coName" type="text" placeholder="Ваше имя">
-          <label>Телефон</label>
-          <input class="co-field" id="coPhone" type="tel" placeholder="92 333 6066">
-          <label>Город и адрес доставки</label>
-          <input class="co-field" id="coAddr" type="text" placeholder="Например: Худжанд, 19 мкр., дом 5, кв. 12">
-          <p class="pay-note" style="margin-bottom:18px">💳 Оплата: <b>карта «Душанбе Сити»</b> — перевод на реквизиты магазина, доставка после подтверждения оплаты.</p>
-          <button class="modal__btn" id="coNext">К оплате</button>
-        </div>
-
-        <!-- шаг 2: оплата -->
-        <div id="coPay" style="display:none">
-          <h3>Оплата заказа <span id="coOrderNo" style="color:var(--primary-d)"></span></h3>
-          <p style="color:var(--grey);font-size:14px;margin-bottom:16px">Переведите сумму на карту «Душанбе Сити» и нажмите «Я оплатил(а)». Мы подтвердим перевод и привезём заказ.</p>
-          <div class="paycard">
-            <div class="paycard__chip"></div>
-            <div class="paycard__num" id="coCardNum">0000 0000 0000 0000</div>
-            <div class="paycard__row"><span id="coCardHolder">BAKHTOVAR BABYLUX</span><span>Душанбе Сити</span></div>
-          </div>
-          <div class="pay-note">📲 Или перевод по номеру телефона в приложении «Душанбе Сити»: <b id="coPhonePay" style="white-space:nowrap">92 333 6066</b></div>
-          <div class="pay-total"><span>Сумма к переводу</span><span id="coTotal"></span></div>
-          <button class="modal__btn" id="coPayBtn">Я оплатил(а) — подтвердить</button>
-          <button class="co-back" id="coBack">← Вернуться к адресу</button>
-        </div>
       </div>
     </div>
   </div>
@@ -512,106 +477,42 @@
     render();
   });
 
-  document.getElementById('orderBtn').addEventListener('click', () => {
-    const items = BabyCart.withDetail();
-    if (!items.length) return;
-    openCheckout();
-  });
-
-  /* ============ Оформление и предоплата (Душанбе Сити) ============ */
-  // ⚠️ ВПИШИТЕ СВОИ РЕКВИЗИТЫ КАРТЫ «ДУШАНБЕ СИТИ»:
-  const PAY_CARD = 'XXXX XXXX XXXX XXXX';
-  const PAY_HOLDER = 'BAKHTOVAR BABYLUX';
-  const PAY_PHONE = '92 333 6066';
+  /* ============ Заказ через Telegram поддержки ============ */
   const SUPPORT_TG = 'https://t.me/Abdulloevb17';
   let lastTgMsg = '';
 
-  const checkoutModal = document.getElementById('checkoutModal');
-  const coForm = document.getElementById('coForm');
-  const coPay = document.getElementById('coPay');
-  let payAmount = 0;
-  let bankOrderNo = '';
-
-  function openCheckout() {
-    const s = window.BabyUser ? BabyUser.session() : null;
-    document.getElementById('coName').value = (s && s.name) || '';
-    document.getElementById('coPhone').value = (s && s.phone) || '';
-    document.getElementById('coAddr').value = '';
-    coForm.style.display = '';
-    coPay.style.display = 'none';
-    checkoutModal.classList.add('is-open');
-  }
-  document.getElementById('coClose').addEventListener('click', () => checkoutModal.classList.remove('is-open'));
-  checkoutModal.addEventListener('click', e => {
-    if (e.target === e.currentTarget) checkoutModal.classList.remove('is-open');
-  });
-
-  document.getElementById('coNext').addEventListener('click', () => {
-    const name = document.getElementById('coName').value.trim();
-    const phone = document.getElementById('coPhone').value.trim();
-    const addr = document.getElementById('coAddr').value.trim();
-    if (!name) return promptCo('Укажите имя');
-    if (!phone) return promptCo('Укажите телефон');
-    if (!addr) return promptCo('Укажите адрес доставки');
-    bankOrderNo = 'BL-' + String(Date.now()).slice(-6);
-    payAmount = BabyCart.total();
-    document.getElementById('coOrderNo').textContent = bankOrderNo;
-    document.getElementById('coCardNum').textContent = PAY_CARD;
-    document.getElementById('coCardHolder').textContent = PAY_HOLDER;
-    document.getElementById('coPhonePay').textContent = PAY_PHONE;
-    document.getElementById('coTotal').textContent = fmt(payAmount);
-    coForm.style.display = 'none';
-    coPay.style.display = '';
-  });
-  document.getElementById('coBack').addEventListener('click', () => {
-    coPay.style.display = 'none';
-    coForm.style.display = '';
-  });
-
-  function promptCo(msg) {
-    const h = checkoutModal.querySelector('h3');
-    if (h) h.textContent = msg;
-    if (!RM && window.gsap && document.getElementById('coTitle')) {
-      gsap.fromTo('#coTitle', { x: -6 }, { x: 0, duration: 0.4, ease: 'power2.out' });
-    }
-  }
-
-  document.getElementById('coPayBtn').addEventListener('click', () => {
+  document.getElementById('orderBtn').addEventListener('click', () => {
     const items = BabyCart.withDetail();
     if (!items.length) return;
-    const name = document.getElementById('coName').value.trim();
-    const phone = document.getElementById('coPhone').value.trim();
-    const addr = document.getElementById('coAddr').value.trim();
-    BabyCart.saveOrder({
-      no: bankOrderNo,
-      date: new Date().toLocaleString('ru-RU'),
-      customer: { name: name, phone: phone, addr: addr },
-      pay: 'Душанбе Сити · предоплата',
-      status: 'Оплачено — ждёт подтверждения перевода',
-      items: items.map(it => ({ id: it.id, name: it.name, price: it.price, qty: it.qty })),
-      total: payAmount
-    });
+    const no = 'BL-' + String(Date.now()).slice(-6);
+    const s = window.BabyUser ? BabyUser.session() : null;
+    const who = (s && s.name) ? s.name : '';
     const tgMsg =
-      'Здравствуйте! Я оформил(а) заказ в Baby Lux 🧸' +
-      '\nЗаказ: ' + bankOrderNo +
+      'Здравствуйте! Хочу заказать в Baby Lux 🧸' +
+      (who ? '\nМеня зовут: ' + who : '') +
+      '\nЗаказ: ' + no +
       '\n\nТовары:\n' +
       items.map(it => '— ' + it.name + ' ×' + it.qty + ' = ' + (it.price * it.qty).toLocaleString('ru-RU') + ' сомони').join('\n') +
-      '\n\nИтого к оплате: ' + payAmount.toLocaleString('ru-RU') + ' сомони' +
-      '\nПлачу картой «Душанбе Сити»' +
-      '\n' + name + ' · ' + phone +
-      '\nДоставка: ' + addr;
+      '\n\nИтого: ' + BabyCart.total().toLocaleString('ru-RU') + ' сомони' +
+      '\n\nПодтвердите заказ и подскажите по доставке, пожалуйста.';
     lastTgMsg = tgMsg;
+    BabyCart.saveOrder({
+      no: no,
+      date: new Date().toLocaleString('ru-RU'),
+      customer: s ? { name: s.name || '', phone: s.phone || '', login: s.login } : null,
+      pay: 'Договоримся в Telegram',
+      status: 'Передано в Telegram поддержку',
+      items: items.map(it => ({ id: it.id, name: it.name, price: it.price, qty: it.qty })),
+      total: BabyCart.total()
+    });
     BabyCart.clear();
-    checkoutModal.classList.remove('is-open');
     orderWrap.style.display = 'none';
     summary.style.display = 'none';
     empty.style.display = 'none';
     orderOk.style.display = 'block';
-    orderOk.querySelector('#orderNo').textContent = bankOrderNo;
-    if (lastTgMsg) {
-      const tgBtn = document.getElementById('tgBtn');
-      if (tgBtn) tgBtn.href = SUPPORT_TG + '?text=' + encodeURIComponent(lastTgMsg);
-    }
+    orderOk.querySelector('#orderNo').textContent = no;
+    const tgBtn = document.getElementById('tgBtn');
+    if (tgBtn) tgBtn.href = SUPPORT_TG + '?text=' + encodeURIComponent(tgMsg);
     BabyCart.syncBadge();
     celebrateOrder();
     window.open(SUPPORT_TG + '?text=' + encodeURIComponent(tgMsg), '_blank');
