@@ -40,17 +40,32 @@
   section{position:relative}
 
   /* ---------- Preloader ---------- */
-  .preloader{position:fixed;inset:0;z-index:1000;background:linear-gradient(180deg,var(--paper),#F7EEDD);
+  .preloader{position:fixed;inset:0;z-index:1000;background:linear-gradient(165deg,#FFE3B3 0%,#FFB25E 34%,#F97316 66%,#E05A0B 100%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
-  .preloader__scene{position:relative;width:340px;height:150px}
-  .preloader__car{position:absolute;left:6px;bottom:6px;filter:drop-shadow(0 12px 16px rgba(74,63,58,.18))}
+  .preloader__scene{position:relative;width:340px;height:150px;overflow:visible}
+  .preloader__car{position:absolute;left:6px;bottom:6px;filter:drop-shadow(0 12px 16px rgba(120,40,0,.3))}
   .bubble{position:absolute;border-radius:50%;pointer-events:none;
-    background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95),rgba(46,200,230,.55));
-    box-shadow:inset -4px -6px 8px rgba(46,200,230,.28)}
-  .preloader__brand{font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:2px}
-  .preloader__brand b{color:var(--primary-d)}
-  .preloader__bar{width:220px;height:7px;border-radius:99px;background:var(--line);overflow:hidden}
-  .preloader__fill{height:100%;width:0;border-radius:99px;background:var(--grad)}
+    background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.95),rgba(255,178,94,.55));
+    box-shadow:inset -4px -6px 8px rgba(255,140,50,.3)}
+  .pamb{position:absolute;bottom:12px;border-radius:50%;pointer-events:none;opacity:0;
+    background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.92),rgba(255,178,94,.5));
+    box-shadow:inset -3px -5px 7px rgba(255,140,50,.28);
+    animation:pamb 3.4s linear infinite}
+  @keyframes pamb{0%{transform:translateY(0) scale(.8);opacity:0}
+    12%{opacity:.95}100%{transform:translateY(-160px) scale(1.15);opacity:0}}
+  .preloader__brand{font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:2px;
+    color:#fff;text-shadow:0 2px 10px rgba(190,70,0,.25)}
+  .preloader__brand b{color:#FFE3B3}
+  .preloader__bar{width:220px;height:7px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden}
+  .preloader__fill{height:100%;width:0;border-radius:99px;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.85)}
+
+  /* ---------- Site-wide bubbles ---------- */
+  .bubfix{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .bubfix i{position:absolute;bottom:-40px;border-radius:50%;opacity:0;
+    background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.85),rgba(255,178,94,.4));
+    box-shadow:inset -3px -5px 7px rgba(255,140,50,.25);animation:bubfly linear infinite}
+  @keyframes bubfly{0%{transform:translateY(0);opacity:0}
+    8%{opacity:.7}100%{transform:translateY(-115vh);opacity:0}}
 
   /* ---------- Header ---------- */
   .header{position:fixed;inset-inline:0;top:0;z-index:100;background:rgba(255,251,244,.86);
@@ -288,22 +303,40 @@
 <!-- ============ PRELOADER ============ -->
 <div class="preloader" id="preloader" aria-hidden="true">
   <div class="preloader__scene" id="pscene">
-    <svg class="preloader__car" width="190" height="120" viewBox="0 0 200 128" fill="none">
-      <g>
-        <path d="M22 88Q20 80 28 78L66 62Q74 59 82 62L128 76Q172 88 176 92Q180 98 170 100H92L92 96Q88 92 84 92V100L40 100Q28 100 22 92Q20 90 22 88Z" fill="#2EC8E6"/>
-        <path d="M66 62L62 40Q62 34 68 34H104Q110 34 110 40V54L82 62Z" fill="#fff"/>
-        <path d="M104 34H118Q126 40 128 62H110V40Q110 34 104 34Z" fill="#F6A5C0"/>
-        <circle cx="86" cy="38" r="4" fill="#2EC8E6"/>
-        <circle cx="122" cy="46" r="4" fill="#2EC8E6"/>
-        <circle cx="42" cy="100" r="21" fill="#4A3F3A"/>
-        <circle cx="42" cy="100" r="8" fill="#fff"/>
-        <circle cx="140" cy="102" r="21" fill="#4A3F3A"/>
-        <circle cx="140" cy="102" r="8" fill="#fff"/>
-        <circle cx="16" cy="44" r="3.5" fill="#F6A5C0"/>
-        <circle cx="70" cy="40" r="3.5" fill="#4A3F3A"/>
-        <circle cx="130" cy="48" r="3.5" fill="#4A3F3A"/>
+    <svg class="preloader__car pram" width="200" height="128" viewBox="0 0 200 128" fill="none">
+      <g class="pjerk">
+        <path d="M52 66Q44 52 32 38" stroke="#4A3F3A" stroke-width="6" stroke-linecap="round"/>
+        <g>
+          <path d="M30 70Q28 30 70 26Q108 22 114 46L114 62Q114 68 106 68L38 68Q32 68 30 62Z" fill="#F97316"/>
+          <path d="M72 60Q68 54 70 44Q74 32 92 30Q104 30 108 42Q110 46 108 50L72 60Z" fill="#FFB25E"/>
+          <path d="M60 26Q62 18 72 18Q84 18 88 26" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <path d="M40 68L106 68Q116 70 118 76Q120 82 114 84L44 84Q36 84 34 78Q32 72 40 68Z" fill="#E05A0B"/>
+        <path d="M62 84L84 96" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+        <g class="pwheel pwheel-l">
+          <circle cx="42" cy="100" r="21" fill="#4A3F3A"/>
+          <circle cx="42" cy="100" r="8.5" fill="#F97316"/>
+          <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+            <path d="M42 79V121"/><path d="M21 100H63"/><path d="M27 85L57 115"/><path d="M57 85L27 115"/>
+          </g>
+          <circle cx="42" cy="100" r="3" fill="#fff"/>
+        </g>
+        <g class="pwheel pwheel-r">
+          <circle cx="140" cy="102" r="21" fill="#4A3F3A"/>
+          <circle cx="140" cy="102" r="8.5" fill="#F97316"/>
+          <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+            <path d="M140 81V123"/><path d="M119 102H161"/><path d="M125 87L155 117"/><path d="M155 87L125 117"/>
+          </g>
+          <circle cx="140" cy="102" r="3" fill="#fff"/>
+        </g>
       </g>
     </svg>
+    <i class="pamb" style="left:8%;width:14px;height:14px;animation-delay:0s"></i>
+    <i class="pamb" style="left:22%;width:10px;height:10px;animation-delay:.9s"></i>
+    <i class="pamb" style="left:40%;width:16px;height:16px;animation-delay:1.7s"></i>
+    <i class="pamb" style="left:58%;width:11px;height:11px;animation-delay:.4s"></i>
+    <i class="pamb" style="left:74%;width:15px;height:15px;animation-delay:2.2s"></i>
+    <i class="pamb" style="left:88%;width:12px;height:12px;animation-delay:1.2s"></i>
   </div>
   <div class="preloader__brand">baby <b>lux</b>.tj</div>
   <div class="preloader__bar"><div class="preloader__fill" id="pfill"></div></div>
@@ -660,18 +693,23 @@
     }
     const scene = document.getElementById('pscene');
     const car = scene.querySelector('.preloader__car');
+    const pjerk = scene.querySelector('.pjerk');
     const fill = document.getElementById('pfill');
+    gsap.to(scene.querySelector('.pwheel-l .pspoke'), { rotation: 360, duration: 1.1, repeat: -1, ease: 'none' });
+    gsap.to(scene.querySelector('.pwheel-r .pspoke'), { rotation: 360, duration: 1.1, repeat: -1, ease: 'none' });
+    gsap.to(pjerk, { y: -7, duration: 0.55, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(pjerk, { rotation: 1.6, duration: 0.7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
     const bubbles = [];
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 14; i++) {
       const b = document.createElement('div');
       b.className = 'bubble';
-      const s = 10 + Math.random() * 20;
+      const s = 10 + Math.random() * 22;
       b.style.width = s + 'px'; b.style.height = s + 'px';
-      b.style.left = (26 + Math.random() * 28) + 'px';
-      b.style.top = (72 + Math.random() * 26) + 'px';
+      b.style.left = (6 + Math.random() * 316) + 'px';
+      b.style.top = (70 + Math.random() * 34) + 'px';
       b.style.opacity = 0;
       scene.appendChild(b); bubbles.push(b);
-      gsap.to(b, { opacity: 1, x: 40 + Math.random() * 90, y: -30 - Math.random() * 90,
+      gsap.to(b, { opacity: 1, x: 20 + Math.random() * 50, y: -40 - Math.random() * 90,
         duration: 0.9, delay: 0.08 * i, ease: 'power1.out' });
     }
     const tl = gsap.timeline();
@@ -880,5 +918,18 @@
   runPreloader();
 })();
 </script>
+
+<div class="bubfix" aria-hidden="true">
+  <i style="left:4%;width:16px;height:16px;animation-duration:13s;animation-delay:-3s"></i>
+  <i style="left:13%;width:9px;height:9px;animation-duration:16s;animation-delay:-9s"></i>
+  <i style="left:24%;width:22px;height:22px;animation-duration:19s;animation-delay:-1s"></i>
+  <i style="left:35%;width:12px;height:12px;animation-duration:14s;animation-delay:-6s"></i>
+  <i style="left:47%;width:18px;height:18px;animation-duration:17s;animation-delay:-11s"></i>
+  <i style="left:58%;width:10px;height:10px;animation-duration:15s;animation-delay:-4s"></i>
+  <i style="left:69%;width:24px;height:24px;animation-duration:20s;animation-delay:-8s"></i>
+  <i style="left:79%;width:13px;height:13px;animation-duration:13s;animation-delay:-2s"></i>
+  <i style="left:89%;width:17px;height:17px;animation-duration:18s;animation-delay:-12s"></i>
+  <i style="left:96%;width:10px;height:10px;animation-duration:14s;animation-delay:-7s"></i>
+</div>
 </body>
 </html>

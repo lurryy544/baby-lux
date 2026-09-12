@@ -36,12 +36,13 @@
   .container{width:min(1180px,92vw);margin-inline:auto}
   section{position:relative}
 
-  .preloader{position:fixed;inset:0;z-index:1000;background:linear-gradient(180deg,var(--paper),#F7EEDD);
+  .preloader{position:fixed;inset:0;z-index:1000;background:linear-gradient(165deg,#FFE3B3 0%,#FFB25E 34%,#F97316 66%,#E05A0B 100%);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
-  .preloader__brand{font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:2px}
-  .preloader__brand b{color:var(--primary-d)}
-  .preloader__bar{width:220px;height:7px;border-radius:99px;background:var(--line);overflow:hidden}
-  .preloader__fill{height:100%;width:0;border-radius:99px;background:var(--grad)}
+  .preloader__brand{font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:2px;
+    color:#fff;text-shadow:0 2px 10px rgba(190,70,0,.25)}
+  .preloader__brand b{color:#FFE3B3}
+  .preloader__bar{width:220px;height:7px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden}
+  .preloader__fill{height:100%;width:0;border-radius:99px;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.85)}
 
   .header{position:fixed;inset-inline:0;top:0;z-index:100;background:rgba(255,251,244,.86);
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:box-shadow .35s}
@@ -173,6 +174,12 @@
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important}
   }
+  .bubfix{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .bubfix i{position:absolute;bottom:-40px;border-radius:50%;opacity:0;
+    background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.85),rgba(255,178,94,.4));
+    box-shadow:inset -3px -5px 7px rgba(255,140,50,.25);animation:bubfly linear infinite}
+  @keyframes bubfly{0%{transform:translateY(0);opacity:0}
+    8%{opacity:.7}100%{transform:translateY(-115vh);opacity:0}}
 </style>
 </head>
 <body class="no-scroll">
@@ -612,5 +619,17 @@
   runPreloader();
 })();
 </script>
+<div class="bubfix" aria-hidden="true">
+  <i style="left:5%;width:16px;height:16px;animation-duration:13s;animation-delay:-3s"></i>
+  <i style="left:14%;width:9px;height:9px;animation-duration:16s;animation-delay:-9s"></i>
+  <i style="left:25%;width:22px;height:22px;animation-duration:19s;animation-delay:-1s"></i>
+  <i style="left:36%;width:12px;height:12px;animation-duration:14s;animation-delay:-6s"></i>
+  <i style="left:48%;width:18px;height:18px;animation-duration:17s;animation-delay:-11s"></i>
+  <i style="left:60%;width:10px;height:10px;animation-duration:15s;animation-delay:-4s"></i>
+  <i style="left:71%;width:24px;height:24px;animation-duration:20s;animation-delay:-8s"></i>
+  <i style="left:82%;width:13px;height:13px;animation-duration:13s;animation-delay:-2s"></i>
+  <i style="left:91%;width:17px;height:17px;animation-duration:18s;animation-delay:-12s"></i>
+  <i style="left:97%;width:10px;height:10px;animation-duration:14s;animation-delay:-7s"></i>
+</div>
 </body>
 </html>
