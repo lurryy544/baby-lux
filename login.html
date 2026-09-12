@@ -132,6 +132,10 @@
   var btn = document.getElementById('submitBtn');
   var msg = document.getElementById('msg');
   var mode = 'login';
+  var qs = new URLSearchParams(location.search);
+  var nextPage = qs.get('next') || '';
+  if (qs.get('mode') === 'reg') setMode('reg');
+  else setMode('login');
 
   function setMode(m) {
     mode = m;
@@ -178,12 +182,14 @@
     document.getElementById('authView').style.display = 'none';
     var note = document.getElementById('okNote');
     note.style.display = 'block';
-    var back = 'catalog.html';
+    var back = nextPage || 'catalog.html';
     try {
-      var ref = document.referrer;
-      if (ref && ref.indexOf('://') !== -1) {
-        var p = new URL(ref);
-        if (p.host === location.host && p.pathname.split('/').pop().indexOf('login') === -1) back = p.pathname.split('/').pop() || 'baby-lux-demo.html';
+      if (!nextPage) {
+        var ref = document.referrer;
+        if (ref && ref.indexOf('://') !== -1) {
+          var p = new URL(ref);
+          if (p.host === location.host && p.pathname.split('/').pop().indexOf('login') === -1) back = p.pathname.split('/').pop() || 'baby-lux-demo.html';
+        }
       }
     } catch (e) {}
     setTimeout(function () { location.href = back; }, 1200);
