@@ -687,7 +687,7 @@
   runPreloader();
 })();
 </script>
-<script>(function(){var L=window.BABY_LUX_LOGO||localStorage.getItem('babyLuxLogo');if(L){document.querySelectorAll('a.logo').forEach(function(a){var s=a.querySelector('svg');if(s){var im=document.createElement('img');im.src=L;im.alt='Baby Lux';im.className='logo__img';a.insertBefore(im,s);s.style.display='none';}});}})();</script>
+<script>(function(){var L=localStorage.getItem('babyLuxLogo')||window.BABY_LUX_LOGO||'logo.jpg';if(L){document.querySelectorAll('a.logo').forEach(function(a){var s=a.querySelector('svg');if(s){var im=document.createElement('img');im.src=L;im.alt='Baby Lux';im.className='logo__img';a.insertBefore(im,s);s.style.display='none';}});}})();</script>
 <div class="bubfix" aria-hidden="true">
   <i style="left:5%;width:16px;height:16px;animation-duration:13s;animation-delay:-3s"></i>
   <i style="left:14%;width:9px;height:9px;animation-duration:16s;animation-delay:-9s"></i>
