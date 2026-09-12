@@ -100,18 +100,44 @@
     background:var(--pink);color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}
 
   /* ---------- Hero ---------- */
-  .hero{padding:150px 0 96px;overflow:hidden}
-  .hero__blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;pointer-events:none}
-  .hero__blob--1{width:340px;height:340px;background:var(--pink);top:-80px;right:-60px}
-  .hero__blob--2{width:260px;height:260px;background:var(--mint);bottom:-70px;left:-80px}
-  .hero__wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+  .hero{position:relative;padding:150px 0 96px;overflow:hidden;
+    background:
+      radial-gradient(1200px 620px at 12% -8%, rgba(255,255,255,.40), transparent 60%),
+      radial-gradient(900px 520px at 112% 12%, rgba(255,226,154,.55), transparent 55%),
+      linear-gradient(135deg, #FFE29A 0%, #FFB25E 46%, #F97316 100%)}
+  .hero__sun{position:absolute;top:-70px;right:-50px;width:290px;height:290px;pointer-events:none;z-index:0}
+  .hero__sun-rays{position:absolute;inset:0;border-radius:50%;
+    background:repeating-conic-gradient(rgba(255,255,255,.55) 0deg 14deg, transparent 14deg 30deg);
+    -webkit-mask:radial-gradient(circle, transparent 21%, #000 22%, #000 29%, transparent 30%);
+    mask:radial-gradient(circle, transparent 21%, #000 22%, #000 29%, transparent 30%);
+    animation:spin 28s linear infinite}
+  .hero__sun-core{position:absolute;inset:15%;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFF6CE, #FFD574 72%);box-shadow:0 0 60px rgba(255,236,170,.9)}
+  .hero__bub{position:absolute;bottom:-40px;border-radius:50%;pointer-events:none;z-index:0;opacity:0;
+    background:radial-gradient(circle at 32% 30%, rgba(255,255,255,.95), rgba(255,255,255,.2) 72%);
+    animation:bubUp 10s linear infinite}
+  .hero__bub--1{left:6%;width:26px;height:26px;animation-duration:11s;animation-delay:-2s}
+  .hero__bub--2{left:24%;width:15px;height:15px;animation-duration:9s;animation-delay:-5s}
+  .hero__bub--3{left:46%;width:21px;height:21px;animation-duration:13s;animation-delay:-8s}
+  .hero__bub--4{left:68%;width:12px;height:12px;animation-duration:8s;animation-delay:-3s}
+  .hero__bub--5{left:87%;width:23px;height:23px;animation-duration:12s;animation-delay:-6s}
+  .hero__blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.45;pointer-events:none;z-index:0}
+  .hero__blob--1{width:340px;height:340px;background:var(--pink);top:-90px;right:-60px;animation:bob 9s ease-in-out infinite alternate}
+  .hero__blob--2{width:260px;height:260px;background:var(--mint);bottom:-70px;left:-80px;animation:bob2 12s ease-in-out infinite alternate}
+  .hero__wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;z-index:0;pointer-events:none}
+  .hero__wave svg{width:100%;height:56px;display:block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes bubUp{0%{transform:translateY(0) scale(1);opacity:0}8%{opacity:.6}100%{transform:translateY(-115vh) scale(1.3);opacity:0}}
+  @keyframes bob{from{transform:translateY(-12px)}to{transform:translateY(14px)}}
+  @keyframes bob2{from{transform:translateY(12px)}to{transform:translateY(-14px)}}
+  .hero__wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
   .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--butter);border-radius:99px;
     padding:7px 14px;font-weight:800;font-size:13px}
   .hero__badge::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--primary-d)}
   .hero__title{font-family:var(--font-head);font-weight:800;font-size:clamp(36px,6vw,58px);line-height:1.02;margin:18px 0 16px}
   .hero__accent{position:relative;color:var(--primary-d);white-space:nowrap}
   .hero__accent::after{content:'';position:absolute;left:-4px;right:-4px;bottom:4px;height:14px;background:var(--butter);z-index:-1;border-radius:99px;transform:rotate(-1.5deg)}
-  .hero__sub{max-width:520px;color:var(--grey);font-size:17px;margin-bottom:28px}
+  .hero__sub{max-width:520px;color:#6B4530;font-size:17px;margin-bottom:28px}
   .hero__cta{display:flex;gap:12px;flex-wrap:wrap}
   .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:99px;font-weight:800;font-size:16px;
     transition:transform .15s,box-shadow .2s,background .2s}
@@ -127,7 +153,7 @@
     box-shadow:inset 0 0 60px rgba(255,255,255,.8),var(--shadow)}
   .hero__art svg{position:absolute;width:min(300px,64%)}
   .hero__float{position:absolute;border-radius:16px;background:#fff;box-shadow:var(--shadow-sm);padding:10px 14px;
-    display:flex;gap:9px;align-items:center;font-weight:800;font-size:13.5px}
+    display:flex;gap:9px;align-items:center;font-weight:800;font-size:13.5px;animation:bob 7s ease-in-out infinite alternate}
   .hero__float--1{top:8%;left:2%}
   .hero__float--2{bottom:10%;right:0}
   .hero__float b{color:var(--primary-d)}
@@ -346,8 +372,15 @@
 <main id="top">
   <!-- ============ HERO ============ -->
   <section class="hero">
+    <div class="hero__sun"><div class="hero__sun-rays"></div><div class="hero__sun-core"></div></div>
+    <div class="hero__bub hero__bub--1"></div>
+    <div class="hero__bub hero__bub--2"></div>
+    <div class="hero__bub hero__bub--3"></div>
+    <div class="hero__bub hero__bub--4"></div>
+    <div class="hero__bub hero__bub--5"></div>
     <div class="hero__blob hero__blob--1"></div>
     <div class="hero__blob hero__blob--2"></div>
+    <div class="hero__wave"><svg viewBox="0 0 1440 64" preserveAspectRatio="none"><path d="M0 32C180 4 360 4 540 18C720 32 900 52 1080 54C1260 56 1350 44 1440 34V64H0Z" fill="#FFFBF4"/></svg></div>
     <div class="container hero__wrap">
       <div>
         <span class="hero__badge" data-intro>Премиум для малышей · доставка по Таджикистану</span>
