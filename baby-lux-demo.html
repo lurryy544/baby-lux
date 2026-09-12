@@ -163,10 +163,11 @@
   .btn--soft{background:#fff;color:var(--cocoa);border:1px solid var(--line)}
   .btn--soft:hover{border-color:var(--primary)}
   .hero__art{position:relative;display:grid;place-items:center}
-  .hero__ring{width:min(420px,90%);aspect-ratio:1;border-radius:50%;background:
-    radial-gradient(circle at 30% 25%,rgba(255,255,255,.9),rgba(255,255,255,0) 60%),var(--sand);
-    box-shadow:inset 0 0 60px rgba(255,255,255,.8),var(--shadow)}
-  .hero__art svg{position:absolute;width:min(300px,64%)}
+  .hero__art svg.hero__pram{position:relative;width:min(280px,58%);filter:drop-shadow(0 10px 18px rgba(120,40,0,.22));
+    animation:hpBob 2.8s ease-in-out infinite alternate}
+  .hero__art .pspoke{animation:hpSpin 2.4s linear infinite}
+  @keyframes hpBob{0%{transform:translateY(0) rotate(-1.4deg)}100%{transform:translateY(-6px) rotate(1.4deg)}}
+  @keyframes hpSpin{to{transform:rotate(360deg)}}
   .hero__float{position:absolute;border-radius:16px;background:#fff;box-shadow:var(--shadow-sm);padding:10px 14px;
     display:flex;gap:9px;align-items:center;font-weight:800;font-size:13.5px;animation:bob 7s ease-in-out infinite alternate}
   .hero__float--1{top:8%;left:2%}
@@ -428,18 +429,34 @@
         </div>
       </div>
       <div class="hero__art">
-        <div class="hero__ring"></div>
-        <svg viewBox="0 0 200 120">
-          <circle cx="42" cy="40" r="3.5" fill="#2EC8E6"/>
-          <circle cx="70" cy="36" r="3.5" fill="#4A3F3A"/>
-          <path d="M22 88Q20 80 28 78L66 62Q74 59 82 62L128 76Q172 88 176 92Q180 98 170 100H92V96Q88 92 84 92V100L40 100Q28 100 22 92Q20 90 22 88Z" fill="#2EC8E6"/>
-          <path d="M66 62L62 40Q62 34 68 34H104Q110 34 110 40V54L82 62Z" fill="#fff"/>
-          <path d="M104 34H118Q126 40 128 62H110V40Q110 34 104 34Z" fill="#F6A5C0"/>
-          <circle cx="86" cy="38" r="4" fill="#2EC8E6"/>
-          <circle cx="42" cy="100" r="21" fill="#4A3F3A"/>
-          <circle cx="42" cy="100" r="8" fill="#fff"/>
-          <circle cx="140" cy="102" r="21" fill="#4A3F3A"/>
-          <circle cx="140" cy="102" r="8" fill="#fff"/>
+        <svg class="hero__pram" viewBox="0 0 200 128" fill="none" role="img" aria-label="Детская коляска">
+          <g>
+            <path d="M52 66Q44 52 32 38" stroke="#4A3F3A" stroke-width="6" stroke-linecap="round"/>
+            <g>
+              <path d="M30 70Q28 30 70 26Q108 22 114 46L114 62Q114 68 106 68L38 68Q32 68 30 62Z" fill="#F97316"/>
+              <path d="M72 60Q68 54 70 44Q74 32 92 30Q104 30 108 42Q110 46 108 50L72 60Z" fill="#FFB25E"/>
+              <path d="M60 26Q62 18 72 18Q84 18 88 26" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            <path d="M40 68L106 68Q116 70 118 76Q120 82 114 84L44 84Q36 84 34 78Q32 72 40 68Z" fill="#E05A0B"/>
+            <path d="M62 84L84 96" stroke="#4A3F3A" stroke-width="4" stroke-linecap="round"/>
+            <g>
+              <circle cx="42" cy="100" r="21" fill="#4A3F3A"/>
+              <circle cx="42" cy="100" r="8.5" fill="#F97316"/>
+              <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+                <path d="M42 79V121"/><path d="M21 100H63"/><path d="M27 85L57 115"/><path d="M57 85L27 115"/>
+              </g>
+              <circle cx="42" cy="100" r="3" fill="#fff"/>
+            </g>
+            <g>
+              <circle cx="140" cy="102" r="21" fill="#4A3F3A"/>
+              <circle cx="140" cy="102" r="8.5" fill="#F97316"/>
+              <g class="pspoke" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+                <path d="M140 81V123"/><path d="M119 102H161"/><path d="M125 87L155 117"/><path d="M155 87L125 117"/>
+              </g>
+              <circle cx="140" cy="102" r="3" fill="#fff"/>
+            </g>
+            <path d="M38 100Q117 98 176 96" stroke="#FFE3B3" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          </g>
         </svg>
         <div class="hero__float hero__float--1">Безопасность ✓ <b>сертификаты</b></div>
         <div class="hero__float hero__float--2">Доставка <b>бесплатно</b> 🚚</div>
