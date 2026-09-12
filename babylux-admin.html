@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Панель администратора — Baby Lux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2EC8E6;--primary-d:#1FA5C4;--pink:#F6A5C0;--paper:#FFFBF4;--sand:#F2E3D1;
+    --mint:#BFEBD3;--butter:#FFE29A;--lav:#D9C7F3;--cocoa:#4A3F3A;--grey:#8C7B6E;--line:#EAD9C2;
+    --shadow:0 18px 40px -18px rgba(74,63,58,.30);--shadow-sm:0 8px 20px -12px rgba(74,63,58,.25);
+    --font-head:'Baloo 2','Nunito',system-ui,Arial,sans-serif;--font-body:'Nunito',system-ui,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--cocoa);line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  .container{width:min(1180px,94vw);margin-inline:auto}
+  .brand{font-family:var(--font-head);font-weight:800;font-size:20px}
+  .brand b{color:var(--primary-d)}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0}
+  .topbar__links{display:flex;gap:10px}
+  .toplink{padding:8px 16px;border-radius:99px;border:1px solid var(--line);background:#fff;font-weight:700;font-size:13.5px;transition:all .2s}
+  .toplink:hover{border-color:var(--primary);color:var(--primary-d)}
+  .toplink--accent{background:var(--primary);border-color:var(--primary);color:#fff}
+  .toplink--accent:hover{background:var(--primary-d)}
+
+  .gate{min-height:60vh;display:grid;place-items:center;padding:40px 0}
+  .card{background:#fff;border:1px solid var(--line);border-radius:26px;padding:34px;box-shadow:var(--shadow-sm);width:min(420px,100%)}
+  .card h1{font-family:var(--font-head);font-size:26px;margin-bottom:6px}
+  .card p{color:var(--grey);font-size:14px;margin-bottom:20px}
+  .field{width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:14px;font-family:inherit;font-size:15px;background:var(--paper);margin-bottom:14px}
+  .field:focus{outline:2px solid var(--primary);border-color:var(--primary)}
+  .btn{width:100%;padding:14px;border-radius:99px;background:var(--primary);color:#fff;font-weight:800;font-size:15.5px;transition:background .2s,transform .15s}
+  .btn:hover{background:var(--primary-d)}
+  .btn:active{transform:scale(.97)}
+  .btn--soft{background:var(--sand);color:var(--cocoa)}
+  .btn--btn-soft:hover{background:var(--line)}
+  .err{color:#D64541;font-size:13px;font-weight:700;display:none;margin-bottom:10px}
+
+  .panel{display:none;padding:10px 0 60px}
+  .tabs{display:flex;gap:10px;margin:18px 0 24px}
+  .tab{padding:10px 22px;border-radius:99px;font-weight:800;font-size:14.5px;background:#fff;border:1px solid var(--line);transition:all .2s}
+  .tab.is-active{background:var(--cocoa);color:#fff;border-color:var(--cocoa)}
+  .sec{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px}
+  .sec__head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .sec h2{font-family:var(--font-head);font-size:21px}
+  .tbl{width:100%;border-collapse:collapse}
+  .tbl th{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--grey);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .tbl td{padding:10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+  .tbl input{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;background:var(--paper)}
+  .tbl input:focus{outline:2px solid var(--primary)}
+  .hint{font-size:12.5px;color:var(--grey)}
+  .chip{display:inline-block;background:var(--mint);color:var(--cocoa);border-radius:99px;padding:2px 10px;font-weight:700;font-size:12px}
+  .order{border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+  .order__head{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .order__no{font-weight:800}
+  .order__date{font-size:12.5px;color:var(--grey)}
+  .order ul{list-style:none;margin:6px 0}
+  .order li{font-size:13.5px;color:var(--cocoa);padding:2px 0}
+  .order li b{font-weight:700}
+  .order__total{font-weight:800;font-size:15px;color:var(--primary-d)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btnline{width:auto;padding:11px 20px;border-radius:99px;font-weight:800;font-size:14px;color:#fff;background:var(--primary);transition:background .2s}
+  .btnline:hover{background:var(--primary-d)}
+  .btnline--orange{background:#F97316}
+  .btnline--orange:hover{background:#E8620E}
+  .btnline--soft{background:var(--sand);color:var(--cocoa)}
+  .btnline--soft:hover{background:var(--line)}
+  .okmsg{display:none;margin-top:12px;background:var(--mint);color:var(--cocoa);border-radius:14px;padding:10px 16px;font-weight:700;font-size:14px}
+  .clear{display:grid;place-items:center;padding:30px;color:var(--grey);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header class="topbar">
+    <span class="brand">baby <b>lux</b>.tj — админка</span>
+    <nav class="topbar__links">
+      <a class="toplink" href="baby-lux-demo.html">Сайт покупателя</a>
+      <a class="toplink" href="catalog.html">Каталог</a>
+      <a class="toplink" href="cart.html">Корзина</a>
+      <a class="toplink toplink--accent" href="babylux-admin.html">Админ</a>
+    </nav>
+  </header>
+</div>
+
+<!-- ===== ВХОД ===== -->
+<div class="gate" id="gate">
+  <div class="card">
+    <h1>Вход для администратора</h1>
+    <p>Эта страница только для владельца магазина. Заказы и товары доступны после входа.</p>
+    <div class="err" id="err">Неверный пароль</div>
+    <input class="field" id="pass" type="password" placeholder="Пароль">
+    <button class="btn" id="loginBtn">Войти</button>
+  </div>
+</div>
+
+<!-- ===== ПАНЕЛЬ ===== -->
+<div class="panel" id="panel">
+  <div class="container">
+    <div class="tabs">
+      <button class="tab is-active" data-tab="orders">Заказы</button>
+      <button class="tab" data-tab="products">Товары</button>
+    </div>
+
+    <section class="sec" id="tab-orders">
+      <div class="sec__head">
+        <h2>Заказы с сайта</h2>
+        <button class="btnline btnline--soft" id="clearOrders">Очистить историю</button>
+      </div>
+      <div id="ordersList"></div>
+    </section>
+
+    <section class="sec" id="tab-products" style="display:none">
+      <div class="sec__head">
+        <h2>Товары каталога</h2>
+        <span class="hint">Измените цену или название — нажмите «Сохранить»</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl">
+          <thead><tr><th>Название</th><th style="width:130px">Цена, сомони</th><th style="width:130px">Старая цена</th><th style="width:110px">Категория</th></tr></thead>
+          <tbody id="prodRows"></tbody>
+        </table>
+      </div>
+      <div class="toolbar">
+        <button class="btnline" id="saveBtn">Сохранить на этом устройстве</button>
+        <button class="btnline btnline--orange" id="exportBtn">Скачать baby-lux-data.js</button>
+        <button class="btnline btnline--soft" id="resetBtn">Сбросить правки</button>
+      </div>
+      <div class="okmsg" id="okmsg"></div>
+      <p class="hint" style="margin-top:14px">«Сохранить на этом устройстве» — правки видны на сайте в этом браузере сразу.<br>
+        «Скачать baby-lux-data.js» — файл с данными для хостинга: положите его рядом с cart.js и подключите<br>
+        <code>&lt;script src="baby-lux-data.js"&gt;&lt;/script&gt;</code> перед cart.js на всех страницах.</p>
+    </section>
+  </div>
+</div>
+
+<script src="cart.js"></script>
+<script>
+(function () {
+  'use strict';
+  const PASSWORD = 'baby2026';
+
+  if (sessionStorage.getItem('babyLuxAdmin') === '1') showPanel();
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const v = document.getElementById('pass').value.trim();
+    if (v === PASSWORD) {
+      sessionStorage.setItem('babyLuxAdmin', '1');
+      showPanel();
+    } else {
+      const e = document.getElementById('err');
+      e.style.display = 'block';
+      setTimeout(() => { e.style.display = 'none'; }, 2000);
+    }
+  });
+  document.getElementById('pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+
+  function showPanel() {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    renderOrders();
+    renderProducts();
+  }
+
+  const CAT_NAMES = { stroller: 'Коляски', bike: 'Велосипеды', crib: 'Кроватки', chair: 'Стульчики', car: 'Машинки', acc: 'Аксессуары' };
+
+  /* ---------- Заказы ---------- */
+  function renderOrders() {
+    const list = BabyCart.orders();
+    const box = document.getElementById('ordersList');
+    if (!list.length) { box.innerHTML = '<div class="clear">Заказов пока нет</div>'; return; }
+    box.innerHTML = list.map(o =>
+      '<div class="order">' +
+        '<div class="order__head"><span class="order__no">' + o.no + '</span><span class="order__date">' + o.date + '</span></div>' +
+        '<ul>' + o.items.map(it => '<li>' + it.name + ' · ' + it.qty + ' шт. — <b>' + it.price.toLocaleString('ru-RU') + ' сомони</b></li>').join('') + '</ul>' +
+        '<div class="order__total">Итого: ' + o.total.toLocaleString('ru-RU') + ' сомони</div>' +
+      '</div>'
+    ).join('');
+  }
+  document.getElementById('clearOrders').addEventListener('click', () => {
+    if (!confirm('Удалить всю историю заказов на этом устройстве?')) return;
+    BabyCart.clearOrders();
+    renderOrders();
+  });
+
+  /* ---------- Товары ---------- */
+  const rowsEl = document.getElementById('prodRows');
+  let rows = [];
+  function renderProducts() {
+    const ov = BabyCart.overrides();
+    rows = Object.keys(BabyCart.registry).map(id => {
+      const base = BabyCart.registry[id];
+      const o = ov[id] || base;
+      return { id: id, name: o.name, price: o.price, old: o.old, cat: base.cat };
+    }).sort((a, b) => a.cat.localeCompare(b.cat) || a.price - b.price);
+    rowsEl.innerHTML = rows.map(r =>
+      '<tr data-id="' + r.id + '">' +
+        '<td><input type="text" value="' + esc(r.name) + '"></td>' +
+        '<td><input type="number" value="' + r.price + '" min="0"></td>' +
+        '<td><input type="number" value="' + (r.old || 0) + '" min="0"></td>' +
+        '<td><span class="chip">' + (CAT_NAMES[r.cat] || r.cat) + '</span></td>' +
+      '</tr>'
+    ).join('');
+  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+  function collect() {
+    const map = {};
+    rowsEl.querySelectorAll('tr[data-id]').forEach(tr => {
+      const id = tr.getAttribute('data-id');
+      const inputs = tr.querySelectorAll('input');
+      const name = inputs[0].value.trim();
+      const price = parseInt(inputs[1].value, 10) || 0;
+      const old = parseInt(inputs[2].value, 10) || 0;
+      map[id] = { name: name, price: price };
+      if (old > 0) map[id].old = old; else map[id].old = null;
+    });
+    return map;
+  }
+
+  function flash(msg) {
+    const el = document.getElementById('okmsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => { el.style.display = 'none'; }, 3500);
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    BabyCart.saveOverrides(collect());
+    flash('Сохранено. Правки видны на сайте в этом браузере.');
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const map = collect();
+    const clean = {};
+    Object.keys(map).forEach(id => {
+      const d = map[id];
+      clean[id] = { name: d.name, price: d.price };
+      if (d.old != null) clean[id].old = d.old;
+    });
+    const js = '/* Baby Lux — данные каталога (сгенерировано из админки). Подключить ПЕРЕД cart.js */\n' +
+      'window.BABY_LUX_DATA = ' + JSON.stringify(clean, null, 2) + ';\n';
+    const blob = new Blob([js], { type: 'application/javascript' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'baby-lux-data.js';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    flash('Файл baby-lux-data.js скачан.');
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Вернуть исходные товары?')) return;
+    BabyCart.saveOverrides({});
+    renderProducts();
+    flash('Правки сброшены.');
+  });
+
+  /* ---------- Табы ---------- */
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('is-active'));
+      t.classList.add('is-active');
+      document.getElementById('tab-orders').style.display = t.getAttribute('data-tab') === 'orders' ? '' : 'none';
+      document.getElementById('tab-products').style.display = t.getAttribute('data-tab') === 'products' ? '' : 'none';
+    });
+  });
+})();
+</script>
+</body>
+</html>

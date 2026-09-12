@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Каталог — Baby Lux</title>
+<meta name="description" content="Детский интернет-магазин в Худжанде. Коляски, велосипеды, кроватки, стульчики, машинки и аксессуары. Доставка по Таджикистану.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2EC8E6;
+    --primary-d:#1FA5C4;
+    --pink:#F6A5C0;
+    --paper:#FFFBF4;
+    --sand:#F2E3D1;
+    --mint:#BFEBD3;
+    --butter:#FFE29A;
+    --lav:#D9C7F3;
+    --cocoa:#4A3F3A;
+    --grey:#8C7B6E;
+    --line:#EAD9C2;
+    --grad:linear-gradient(135deg,#2EC8E6,#F6A5C0);
+    --shadow:0 18px 40px -18px rgba(74,63,58,.30);
+    --shadow-sm:0 8px 20px -12px rgba(74,63,58,.25);
+    --font-head:'Baloo 2','Nunito',system-ui,Arial,sans-serif;
+    --font-body:'Nunito',system-ui,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--cocoa);line-height:1.5;overflow-x:hidden}
+  body.no-scroll{overflow:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  img,svg{display:block}
+  .container{width:min(1180px,92vw);margin-inline:auto}
+  section{position:relative}
+
+  .preloader{position:fixed;inset:0;z-index:1000;background:linear-gradient(180deg,var(--paper),#F7EEDD);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
+  .preloader__brand{font-family:var(--font-head);font-weight:800;font-size:22px;letter-spacing:2px}
+  .preloader__brand b{color:var(--primary-d)}
+  .preloader__bar{width:220px;height:7px;border-radius:99px;background:var(--line);overflow:hidden}
+  .preloader__fill{height:100%;width:0;border-radius:99px;background:var(--grad)}
+
+  .header{position:fixed;inset-inline:0;top:0;z-index:100;background:rgba(255,251,244,.86);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:box-shadow .35s}
+  .header.is-stuck{box-shadow:0 10px 30px -20px rgba(74,63,58,.35)}
+  .header__row{display:flex;align-items:center;gap:22px;padding:10px 0}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo svg{width:64px;height:auto;flex:none;border-radius:50%;box-shadow:var(--shadow-sm)}
+  .logo__text{font-family:var(--font-head);font-weight:800;font-size:20px;line-height:1.05}
+  .logo__text small{display:block;font-family:var(--font-body);font-weight:700;font-size:11px;color:var(--grey);letter-spacing:1px}
+  .nav{flex:1}
+  .nav__list{display:flex;gap:4px;justify-content:center;list-style:none}
+  .nav__link{display:flex;align-items:center;gap:6px;padding:9px 15px;border-radius:99px;
+    font-weight:700;font-size:14.5px;transition:background .25s,color .25s;white-space:nowrap}
+  .nav__link:hover{background:var(--sand)}
+  .nav__link.is-active{background:var(--primary);color:#fff}
+  .nav__caret{width:0;height:0;border:4px solid transparent;border-top-color:currentColor;border-top-width:5px;
+    transform:translateY(2px);transition:transform .3s}
+  .nav__link.is-open .nav__caret{transform:translateY(-1px) rotate(180deg)}
+  .nav__item{position:relative}
+  .dropdown{position:absolute;top:calc(100% + 12px);left:0;min-width:248px;background:#fff;border-radius:22px;
+    box-shadow:var(--shadow);padding:10px;z-index:50;opacity:0;visibility:hidden;transform:translateY(-12px) scale(.92);
+    transform-origin:top left;filter:blur(3px)}
+  .dropdown__note{font-size:12px;color:var(--grey);padding:8px 12px 4px;font-weight:700}
+  .dropdown__row{display:flex;gap:12px;align-items:center;width:100%;padding:11px 12px;border-radius:15px;transition:background .2s,transform .2s}
+  .dropdown__row:hover{background:var(--sand);transform:translateX(4px)}
+  .sub-ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;position:relative}
+  .sub-ico svg{width:30px;height:30px}
+  .sub-ico--blue{background:var(--primary)}
+  .sub-ico--pink{background:var(--pink)}
+  .dropdown__name{font-weight:800;font-size:14.5px;display:block}
+  .dropdown__hint{font-size:12px;color:var(--grey)}
+  .header__actions{display:flex;align-items:center;gap:10px}
+  .icon-btn{width:44px;height:44px;border:1px solid var(--line);background:var(--paper);border-radius:14px;
+    display:grid;place-items:center;transition:transform .2s,border-color .2s,box-shadow .2s}
+  .icon-btn:hover{border-color:var(--pink);box-shadow:var(--shadow-sm)}
+  .icon-btn:active{transform:scale(.93)}
+  .cart{position:relative}
+  .cart__icon,.cart__gift{display:grid;place-items:center;transition:opacity .25s,transform .25s}
+  .cart__gift{position:absolute;inset:0;opacity:0;transform:scale(.4) rotate(-20deg)}
+  .cart.celebrating .cart__icon{opacity:0;transform:scale(.5)}
+  .cart.celebrating .cart__gift{opacity:1;transform:scale(1) rotate(0)}
+  .cart__badge{position:absolute;top:-7px;right:-7px;min-width:21px;height:21px;padding:0 6px;border-radius:99px;
+    background:var(--pink);color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}
+
+  .catalog{padding:150px 0 80px}
+  .crumbs{font-size:13px;color:var(--grey);font-weight:700;margin-bottom:14px}
+  .crumbs a:hover{color:var(--primary-d)}
+  .catsub{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:2px;color:var(--primary-d);text-transform:uppercase}
+  .cattitle{font-family:var(--font-head);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:1.05;margin:8px 0 10px}
+  .catdesc{max-width:620px;color:var(--grey);font-size:16px;margin-bottom:26px}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+  .chip-btn{padding:10px 20px;border-radius:99px;border:1px solid var(--line);background:#fff;font-weight:800;font-size:14px;transition:all .25s}
+  .chip-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .chip-btn.is-active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+  .feat__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .card{position:relative;background:#fff;border:1px solid var(--line);border-radius:24px;padding:14px;
+    display:flex;flex-direction:column;gap:12px;will-change:transform;box-shadow:0 10px 30px -20px rgba(74,63,58,.25);
+    transition:box-shadow .3s,border-color .3s,transform .3s}
+  .card:hover{border-color:var(--primary);box-shadow:var(--shadow);transform:translateY(-6px)}
+  .card__media{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center;background:var(--grad)}
+  .card__media--1{background:linear-gradient(160deg,#F6A5C0,#E8C7EC)}
+  .card__media--2{background:linear-gradient(160deg,#2EC8E6,#9ADBF0)}
+  .card__media--3{background:linear-gradient(160deg,#FFE29A,#F6C58A)}
+  .card__media--4{background:linear-gradient(160deg,#BFEBD3,#9FE0C4)}
+  .card__media--5{background:linear-gradient(160deg,#D9C7F3,#B9A6E8)}
+  .card__media svg{width:70%;height:auto}
+  .card__badge{position:absolute;top:12px;left:12px;background:var(--butter);color:var(--cocoa);font-weight:800;
+    font-size:12px;padding:5px 11px;border-radius:99px}
+  .card__badge--pink{background:var(--pink);color:#fff}
+  .card__wish{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:#fff;
+    display:grid;place-items:center;box-shadow:var(--shadow-sm)}
+  .card__wish.is-on path{fill:var(--pink);stroke:var(--pink)}
+  .card__name{font-family:var(--font-head);font-weight:700;font-size:17.5px;line-height:1.15}
+  .card__meta{font-size:13px;color:var(--grey)}
+  .card__chips{display:flex;gap:6px;margin-top:2px}
+  .chip{width:17px;height:17px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+  .card__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+  .card__price{font-weight:800;font-size:18px}
+  .card__old{display:block;font-size:12.5px;color:var(--grey);font-weight:600;text-decoration:line-through}
+  .card__buy{padding:10px 18px;border-radius:99px;background:var(--primary);color:#fff;font-weight:800;font-size:14.5px;
+    box-shadow:0 10px 18px -8px rgba(46,200,230,.6);transform:translateY(4px);transition:background .2s,transform .2s}
+  .card:hover .card__buy{transform:translateY(0)}
+  .card__buy:hover{background:var(--primary-d)}
+  .card__buy:active{transform:scale(.94) translateY(0)}
+  .none{text-align:center;padding:60px 0;color:var(--grey);font-weight:700}
+
+  .footer{border-top:1px solid var(--line);background:#FFF7EA;padding:44px 0 26px;margin-top:40px}
+  .footer__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;margin-bottom:26px}
+  .footer h4{font-family:var(--font-head);font-weight:700;font-size:16px;margin-bottom:12px}
+  .footer p,.footer a{font-size:14px;color:var(--grey)}
+  .footer a:hover{color:var(--primary-d)}
+  .footer__copy{text-align:center;font-size:12.5px;color:var(--grey);padding-top:20px;border-top:1px dashed var(--line)}
+
+  /* ---------- Support (Telegram) ---------- */
+  .support{position:fixed;right:22px;bottom:24px;z-index:800;display:inline-flex;align-items:center;gap:10px;
+    background:#28A8EA;color:#fff;font-weight:800;font-size:14.5px;padding:14px 22px;border-radius:99px;
+    box-shadow:0 16px 30px -10px rgba(40,168,234,.55);transition:transform .2s}
+  .support:hover{transform:translateY(-3px)}
+  .support:active{transform:scale(.95)}
+  .support__ico{display:grid;place-items:center}
+  .support__ico svg{width:20px;height:20px}
+  .support::after{content:'';position:absolute;inset:0;border-radius:99px;animation:supPulse 2.4s infinite}
+  @keyframes supPulse{
+    0%{box-shadow:0 0 0 0 rgba(40,168,234,.45)}
+    70%{box-shadow:0 0 0 16px rgba(40,168,234,0)}
+    100%{box-shadow:0 0 0 0 rgba(40,168,234,0)}
+  }
+  @media (max-width:640px){.support__text{display:none}.support{padding:14px}}
+
+  .fly{position:fixed;z-index:999;pointer-events:none;left:0;top:0;will-change:transform}
+  .fly__inner{width:96px;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+  .fly__inner .card__media{aspect-ratio:4/3;display:grid;place-items:center;background:var(--grad)}
+  .fly__inner svg{width:70%}
+  .confetti{position:fixed;z-index:998;pointer-events:none;border-radius:2px}
+  .toast{position:fixed;left:50%;bottom:28px;z-index:900;background:var(--cocoa);color:#fff;
+    font-weight:700;font-size:14.5px;padding:13px 22px;border-radius:99px;opacity:0;box-shadow:var(--shadow);white-space:nowrap}
+  .mini-heart{position:fixed;z-index:950;pointer-events:none;width:15px;height:15px}
+
+  @media (max-width:1080px){
+    .feat__grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:640px){
+    .feat__grid{grid-template-columns:1fr}
+    .nav{display:none}
+    .footer__grid{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body class="no-scroll">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="ico-heart" d="M12 21.4C12 21.4 2.6 16.6 2.2 11.2 1.9 6.9 5 4 8.2 4c2 0 3.1 1.1 3.8 2.3C12.7 5.1 13.8 4 15.8 4 19 4 22.1 6.9 21.8 11.2 21.4 16.6 12 21.4 12 21.4Z"/>
+    <g id="ico-cart"><path d="M4 5h2.2l2 12h9.3l2-8H7.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="19.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="19.5" r="1.6" fill="currentColor"/></g>
+    <g id="ico-gift"><path d="M12 7v13M12 7H7a2.5 2.5 0 0 1 0-5c2.5 0 4 2.5 5 4.3V7ZM12 7h5a2.5 2.5 0 0 0 0-5C14.5 2 13 4.5 12 6.3V7Z"/><rect x="4" y="11" width="16" height="3" rx="1"/></g>
+  </defs>
+</svg>
+
+<!-- ============ PRELOADER (короткий) ============ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader__brand">baby <b>lux</b>.tj</div>
+  <div class="preloader__bar"><div class="preloader__fill" id="pfill"></div></div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="header" id="header">
+  <div class="container header__row">
+    <a class="logo" href="baby-lux-demo.html">
+      <svg viewBox="0 0 280 320" width="64" height="73">
+        <circle cx="140" cy="158" r="132" fill="#F97316"/>
+        <line x1="118" y1="56" x2="118" y2="130" stroke="#2E86DE" stroke-width="5" stroke-linecap="round"/>
+        <path d="M118 62L74 128L118 128Z" fill="#2E86DE"/>
+        <path d="M118 62L118 128L156 128Z" fill="#fff"/>
+        <path d="M62 132Q82 120 102 132Q122 144 142 132Q162 120 182 132Q192 136 190 142L64 142Q58 138 62 132Z" fill="#fff"/>
+        <text x="140" y="252" text-anchor="middle" font-family="'Baloo 2','Nunito',Arial,sans-serif" font-size="34" font-weight="800">
+          <tspan fill="#2E86DE">Б</tspan><tspan fill="#fff">ахтовар</tspan>
+        </text>
+      </svg>
+      <span class="logo__text">Baby Lux<small>детский магазин · Худжанд</small></span>
+    </a>
+
+    <nav class="nav" aria-label="Главное меню">
+      <ul class="nav__list">
+        <li class="nav__item has-drop">
+          <button class="nav__link" id="dropBtn" aria-expanded="false" aria-haspopup="true" data-nav="stroller">
+            Коляски <span class="nav__caret"></span>
+          </button>
+          <div class="dropdown" id="drop">
+            <p class="dropdown__note">Выберите тип</p>
+            <a class="dropdown__row" href="catalog.html?cat=stroller&amp;type=walk">
+              <span class="sub-ico sub-ico--blue">
+                <svg viewBox="0 0 48 48" fill="none"><path d="M6 18Q13 8 26 9L26 20Z" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 22L28 22L28 34" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 38H40" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="25" cy="38" r="5" fill="#fff"/><circle cx="38" cy="38" r="5" fill="#fff"/></svg>
+              </span>
+              <span><span class="dropdown__name">Прогулочные</span><span class="dropdown__hint">лёгкие, для ежедневных прогулок</span></span>
+            </a>
+            <a class="dropdown__row" href="catalog.html?cat=stroller&amp;type=combi">
+              <span class="sub-ico sub-ico--pink">
+                <svg viewBox="0 0 48 48" fill="none"><path d="M18 14L26 14L24 24L34 24L32 34" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 40H38" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="40" r="4.6" fill="#fff"/><circle cx="34" cy="40" r="4.6" fill="#fff"/></svg>
+              </span>
+              <span><span class="dropdown__name">3 в 1</span><span class="dropdown__hint">от 0 до 3 лет, трансформер</span></span>
+            </a>
+          </div>
+        </li>
+        <li class="nav__item"><a class="nav__link" data-nav="bike" href="catalog.html?cat=bike">Велосипеды</a></li>
+        <li class="nav__item"><a class="nav__link" data-nav="crib" href="catalog.html?cat=crib">Кроватки</a></li>
+        <li class="nav__item"><a class="nav__link" data-nav="chair" href="catalog.html?cat=chair">Стульчики</a></li>
+        <li class="nav__item"><a class="nav__link" data-nav="car" href="catalog.html?cat=car">Машинки</a></li>
+        <li class="nav__item"><a class="nav__link" data-nav="acc" href="catalog.html?cat=acc">Аксессуары</a></li>
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="icon-btn" href="baby-lux-demo.html" aria-label="Избранное">
+        <svg width="20" height="20" viewBox="0 0 24 24"><use href="#ico-heart" stroke="#4A3F3A" stroke-width="1.8" fill="none"/></svg>
+      </a>
+      <a class="icon-btn cart" id="cartBtn" href="cart.html" aria-label="Открыть корзину" aria-live="polite">
+        <span class="cart__icon"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#ico-cart"/></svg></span>
+        <span class="cart__gift"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F6A5C0" stroke-width="1.8"><use href="#ico-gift"/></svg></span>
+        <span class="cart__badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ KATALOG ============ -->
+<main class="catalog">
+  <div class="container">
+    <nav class="crumbs"><a href="baby-lux-demo.html">Главная</a> / <span id="crumbCat">Каталог</span></nav>
+    <span class="catsub" id="catLabel">Каталог</span>
+    <h1 class="cattitle" id="catTitle">Каталог</h1>
+    <p class="catdesc" id="catDesc"></p>
+    <div class="chips" id="catChips"></div>
+    <div class="feat__grid" id="grid"></div>
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <h4>Baby Lux</h4>
+        <p>Детский интернет-магазин. Помогаем выбрать безопасное и красивое для малышей по всей Таджикистану.</p>
+        <p>Instagram: <a href="https://instagram.com/baby_lux.tj" target="_blank" rel="noopener">@baby_lux.tj</a></p>
+      </div>
+      <div>
+        <h4>Покупателям</h4>
+        <p><a href="catalog.html?cat=stroller">Доставка и оплата</a><br><a href="catalog.html?cat=car">Возврат и гарантия</a><br><a href="catalog.html?cat=acc">Подбор товара</a></p>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <p>Худжанд, проспект Исмоила Сомони<br>WhatsApp: +992 927 00 00 00<br>Ежедневно 9:00–20:00</p>
+      </div>
+    </div>
+    <div class="footer__copy">© 2026 Baby Lux · Сделано с любовью к малышам.<br><a href="babylux-admin.html">Для администратора</a></div>
+  </div>
+</footer>
+
+<a class="support" href="https://t.me/Abdulloevb17" target="_blank" rel="noopener" aria-label="Написать нам в Telegram">
+    <span class="support__ico">
+      <svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.2c.3-1.1-.9-2-1.9-1.6L2.6 9.8c-1.1.4-1 2 .2 2.3l4.6 1.2 1.7 5.4c.3 1 1.6 1.3 2.3.5l2.4-2.7 4.5 3.3c.8.6 2 .1 2.1-1zM8.3 12.9l9.6-6c.3-.2.7.2.4.5l-7.6 7.5-.3 2.8-1-3.6a.6.6 0 0 1 0-.3l-.1-.9zm8-4.5a.3.3 0 0 0-.4 0L8 13.3l-2.6-.7c-.4-.1-.4-.7 0-.8L16 6.7c.4-.2.7.2.3.7-.2.3-.2.8 0 1"/></svg>
+    </span>
+    <span class="support__text">Поддержка</span>
+  </a>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="cart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cartBtn = document.getElementById('cartBtn');
+  const badge = document.getElementById('cartBadge');
+  const toast = document.getElementById('toast');
+  const head = document.getElementById('header');
+  const palette = ['#F6A5C0', '#2EC8E6', '#FFE29A', '#BFEBD3', '#D9C7F3', '#F97316', '#FFFBF4'];
+
+  const ICONS = {
+    stroller: '<svg viewBox="0 0 120 92" fill="none"><path d="M14 44Q30 20 60 22V42" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 46L52 46V74M14 46L14 70" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="24" y1="76" x2="78" y2="76" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="38" cy="76" r="10" fill="#fff"/><circle cx="38" cy="76" r="4" fill="#F6A5C0"/><circle cx="66" cy="76" r="10" fill="#fff"/><circle cx="66" cy="76" r="4" fill="#F6A5C0"/></svg>',
+    bike: '<svg viewBox="0 0 120 84" fill="none"><circle cx="34" cy="56" r="16" stroke="#fff" stroke-width="5"/><circle cx="82" cy="56" r="16" stroke="#fff" stroke-width="5"/><path d="M40 46L62 34M62 34L84 30M50 58L74 44" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="52" y1="46" x2="52" y2="30" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="52" cy="30" r="4" fill="#fff"/><line x1="82" y1="56" x2="82" y2="24" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M76 26L88 26M82 22L82 30" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
+    crib: '<svg viewBox="0 0 120 94" fill="none"><path d="M14 84V30H104V84" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 52H104" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line x1="26" y1="38" x2="26" y2="74" stroke="#fff" stroke-width="2.5"/><line x1="40" y1="38" x2="40" y2="74" stroke="#fff" stroke-width="2.5"/><line x1="54" y1="38" x2="54" y2="74" stroke="#fff" stroke-width="2.5"/><line x1="68" y1="38" x2="68" y2="74" stroke="#fff" stroke-width="2.5"/><line x1="82" y1="38" x2="82" y2="74" stroke="#fff" stroke-width="2.5"/></svg>',
+    chair: '<svg viewBox="0 0 120 96" fill="none"><path d="M20 38H100" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M30 38L30 60L90 60L90 38" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><line x1="36" y1="70" x2="84" y2="70" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line x1="36" y1="70" x2="36" y2="88" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line x1="84" y1="70" x2="84" y2="88" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M22 88H96" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>',
+    car: '<svg viewBox="0 0 120 84" fill="none"><path d="M10 52L22 32Q24 27 30 27H56Q63 27 67 34L82 52Z" fill="#fff"/><circle cx="30" cy="56" r="11" fill="#fff"/><circle cx="76" cy="56" r="11" fill="#fff"/><circle cx="30" cy="56" r="4.4" fill="#2EC8E6"/><circle cx="76" cy="56" r="4.4" fill="#2EC8E6"/><path d="M40 29L40 44M54 29L54 44" stroke="#2EC8E6" stroke-width="4" stroke-linecap="round"/></svg>',
+    acc: '<svg viewBox="0 0 120 102" fill="none"><rect x="38" y="26" width="44" height="66" rx="16" fill="#fff"/><path d="M60 26v-8" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M48 14h24" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M34 44h52M34 62h52M34 80h52" stroke="#F6A5C0" stroke-width="4" stroke-linecap="round" opacity=".55"/><path d="M30 92q30 14 60 0" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>'
+  };
+
+  const CATS = {
+    stroller: {
+      title: 'Коляски', label: 'Коляски', accent: 'Прогулочные · 3 в 1',
+      desc: 'От лёгких прогулочных до трансформеров 3 в 1. Мягкая подвеска, капюшон от солнца и дождевик в комплекте.',
+      groups: [
+        { v: '', t: 'Все коляски' },
+        { v: 'walk', t: 'Прогулочные' },
+        { v: 'combi', t: '3 в 1' }
+      ],
+      products: [
+        { name: 'Коляска прогулочная Breeze', meta: 'до 15 кг · лёгкий алюминий', price: 1990, old: 2290, grad: 1, badge: 'Хит', group: 'walk', colors: ['#F6A5C0', '#2EC8E6'] },
+        { name: 'Коляска прогулочная Sunny', meta: 'до 15 кг · откидная спинка', price: 1690, grad: 3, badge: '', group: 'walk', colors: ['#FFE29A', '#DFF3EC'] },
+        { name: 'Коляска-трость Air 2.5', meta: '5,8 кг · складывается в зонт', price: 990, grad: 5, badge: 'Лёгкая', group: 'walk', colors: ['#D9C7F3', '#F6A5C0'] },
+        { name: 'Коляска 3 в 1 Cloud Combi', meta: 'от 0 до 3 лет · люлька', price: 4550, old: 5200, grad: 1, badge: 'Хит', group: 'combi', colors: ['#F6A5C0', '#D9C7F3', '#BFEBD3'] },
+        { name: 'Коляска 3 в 1 Stellar', meta: 'автокресло + люлька + блок', price: 4150, grad: 2, badge: '', group: 'combi', colors: ['#2EC8E6', '#F6A5C0'] },
+        { name: 'Коляска Metro 2 в 1', meta: 'компактная · для города', price: 3250, grad: 4, badge: '-12%', group: 'combi', colors: ['#BFEBD3', '#FFE29A'] }
+      ]
+    },
+    bike: {
+      title: 'Велосипеды', label: 'Велосипеды', accent: 'беговелы · городские',
+      desc: 'Первые шаги к свободе: беговелы для самых маленьких и велосипеды на вырост. С защитой руля и каской в наборе.',
+      groups: [{ v: '', t: 'Все велосипеды' }],
+      products: [
+        { name: 'Беговел BalanceFirst 12"', meta: 'от 1,5 лет · до 25 кг', price: 560, old: 660, grad: 3, badge: '-15%', group: 'all', colors: ['#F97316', '#6A5ACD'] },
+        { name: 'Беговел Buddy 2 в 1', meta: 'педали докупаются на вырост', price: 720, grad: 1, badge: 'Хит', group: 'all', colors: ['#F6A5C0', '#2EC8E6'] },
+        { name: 'Велосипед City 16"', meta: 'от 3 лет · боковые колёса', price: 1150, grad: 2, badge: '', group: 'all', colors: ['#2EC8E6', '#4A3F3A'] },
+        { name: 'Велосипед Explorer 20"', meta: 'от 5 лет · 6 скоростей', price: 1750, grad: 4, badge: 'Новинка', group: 'all', colors: ['#BFEBD3', '#FF9A76'] }
+      ]
+    },
+    crib: {
+      title: 'Кроватки', label: 'Кроватки', accent: 'маятник · манеж-кроватка',
+      desc: 'Уютные кроватки из массива и портативные манежи. Безопасное спальное место для сладкого сна малыша.',
+      groups: [{ v: '', t: 'Все кроватки' }],
+      products: [
+        { name: 'Кроватка Dream 120×60', meta: 'массив бука · 3 положения', price: 2100, grad: 5, badge: 'Хит', group: 'all', colors: ['#D9C7F3', '#BFEBD3'] },
+        { name: 'Кроватка Junior с маятником', meta: 'качание + колёсики', price: 1850, grad: 3, badge: '', group: 'all', colors: ['#FFE29A', '#F6A5C0'] },
+        { name: 'Кроватка-манеж Porta', meta: 'складывается · дорожная', price: 990, grad: 2, badge: 'Планшет в подарок', group: 'all', colors: ['#2EC8E6', '#BFEBD3'] }
+      ]
+    },
+    chair: {
+      title: 'Стульчики для кормления', label: 'Стульчики', accent: 'трансформеры · бустеры',
+      desc: 'Надёжные стульчики для кормления с 6 месяцев: складываются одной рукой, легко моются, растут вместе с ребёнком.',
+      groups: [{ v: '', t: 'Все стульчики' }],
+      products: [
+        { name: 'Стульчик Mochi', meta: 'складывается одной рукой', price: 890, grad: 3, badge: 'Хит', group: 'all', colors: ['#FFE29A', '#BFEBD3'] },
+        { name: 'Стульчик Boost 4 в 1', meta: 'бустер, шезлонг, стол', price: 1120, grad: 1, badge: '', group: 'all', colors: ['#F6A5C0', '#D9C7F3'] },
+        { name: 'Стульчик-трансформер Uni', meta: 'от 6 мес до 6 лет', price: 1350, grad: 4, badge: 'Новинка', group: 'all', colors: ['#BFEBD3', '#FFE29A'] }
+      ]
+    },
+    car: {
+      title: 'Машинки', label: 'Машинки', accent: 'электромобили · толокары',
+      desc: 'Электромобили с пультом родителей и первые толокары-каталки. Впечатления, которые начинаются с первого поворота руля.',
+      groups: [
+        { v: '', t: 'Все машинки' },
+        { v: 'electric', t: 'Электромобили' },
+        { v: 'tolokar', t: 'Толокары' }
+      ],
+      products: [
+        { name: 'Электромобиль Baby Racer PRO', meta: 'до 25 кг · пульт от родителя', price: 2750, grad: 2, badge: 'Новинка', group: 'electric', colors: ['#2EC8E6', '#F97316'] },
+        { name: 'Электромобиль SUV Safari', meta: '6 км/ч · фары и звук', price: 3100, grad: 3, badge: 'Хит', group: 'electric', colors: ['#F97316', '#4A3F3A'] },
+        { name: 'Электромобиль Купе Luxury', meta: 'кожаный салон · 12 В', price: 3450, grad: 5, badge: 'Премиум', group: 'electric', colors: ['#4A3F3A', '#D9C7F3'] },
+        { name: 'Толокар Mini Runner', meta: 'от 1 года · без батарей', price: 480, grad: 1, badge: '', group: 'tolokar', colors: ['#F6A5C0', '#2EC8E6'] }
+      ]
+    },
+    acc: {
+      title: 'Аксессуары', label: 'Аксессуары', accent: 'гигиена · подарки · текстиль',
+      desc: 'Всё, что делает родительство проще: автокресла, термосумки, дуги для колясок и приятные мелочи в подарок.',
+      groups: [{ v: '', t: 'Все аксессуары' }],
+      products: [
+        { name: 'Автокресло 0–13 кг', meta: 'установка против хода', price: 1600, grad: 2, badge: 'Безопасность', group: 'all', colors: ['#2EC8E6', '#4A3F3A'] },
+        { name: 'Игровая дуга с игрушками', meta: 'универсальная · для колясок', price: 190, grad: 1, badge: '', group: 'all', colors: ['#F6A5C0', '#BFEBD3'] },
+        { name: 'Термосумка для бутылочек', meta: 'держит тепло 6 часов', price: 150, grad: 3, badge: 'Подарок', group: 'all', colors: ['#FFE29A', '#F6A5C0'] },
+        { name: 'Набор гигиены Starter', meta: 'щётка, ножнички, гребень', price: 120, grad: 4, badge: '', group: 'all', colors: ['#BFEBD3', '#D9C7F3'] }
+      ]
+    }
+  };
+
+  /* ---------- URL params ---------- */
+  const params = new URLSearchParams(location.search);
+  const catId = params.get('cat') in CATS ? params.get('cat') : 'stroller';
+  const typeNow = params.get('type') || '';
+  const cat = CATS[catId];
+
+  function cardMarkup(p) {
+    return '<article class="card" data-card>' +
+      '<div class="card__media card__media--' + p.grad + '">' + ICONS[catId] +
+        (p.badge ? '<span class="card__badge ' + (p.badge === 'Новинка' || p.badge === '-15%' ? 'card__badge--pink' : '') + '">' + p.badge + '</span>' : '') +
+        '<button class="card__wish" aria-label="В избранное"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#ico-heart" stroke="#4A3F3A" stroke-width="1.8" fill="none"/></svg></button>' +
+      '</div>' +
+      '<h3 class="card__name">' + p.name + '</h3>' +
+      '<div class="card__meta">' + p.meta + '</div>' +
+      '<div class="card__chips">' + p.colors.map(c => '<span class="chip" style="background:' + c + '"></span>').join('') + '</div>' +
+      '<div class="card__foot">' +
+        '<div><span class="card__price">' + p.price.toLocaleString('ru-RU') + ' сомони</span>' +
+        (p.old ? '<s class="card__old">' + p.old.toLocaleString('ru-RU') + ' сомони</s>' : '') + '</div>' +
+        '<button class="card__buy" data-buy>Купить</button>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function render() {
+    document.title = cat.title + ' — Baby Lux';
+    document.getElementById('catLabel').textContent = cat.label;
+    document.getElementById('crumbCat').textContent = cat.title;
+    document.getElementById('catTitle').textContent = cat.title;
+    document.getElementById('catDesc').textContent = cat.desc;
+
+    const chips = document.getElementById('catChips');
+    chips.innerHTML = cat.groups.map(g =>
+      '<a class="chip-btn' + (g.v === typeNow ? ' is-active' : '') + '" href="catalog.html?cat=' + catId + (g.v ? '&type=' + g.v : '') + '">' + g.t + '</a>'
+    ).join('');
+
+    const items = cat.products.filter(p => !typeNow || p.group === typeNow);
+    const grid = document.getElementById('grid');
+    grid.innerHTML = items.length ? items.map(cardMarkup).join('') : '<p class="none">В этом разделе пока пусто.</p>';
+    if (!items.length) return;
+
+    if (!RM) {
+      gsap.from('.feat__grid .card', { y: 50, autoAlpha: 0, scale: 0.9, duration: 0.7, stagger: 0.08, ease: 'back.out(1.3)',
+        clearProps: 'transform,opacity,visibility' });
+    }
+    bindCards();
+  }
+
+  /* ---------- Nav active ---------- */
+  function markNav() {
+    document.querySelectorAll('[data-nav]').forEach(el => {
+      el.classList.toggle('is-active', el.getAttribute('data-nav') === catId);
+    });
+  }
+
+  /* ---------- Smooth scroll foundation ---------- */
+  const hasLenis = typeof window.Lenis !== 'undefined';
+  const lenis = hasLenis ? new Lenis({ duration: 1.05, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) }) : null;
+  if (lenis) {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id && id.length > 1) {
+        e.preventDefault();
+        const el = document.querySelector(id);
+        if (el) { if (lenis) lenis.scrollTo(el, { offset: -80 }); else el.scrollIntoView({ behavior: 'smooth' }); }
+      }
+    });
+  });
+
+  /* ---------- Preloader (short) ---------- */
+  function runPreloader() {
+    if (RM) {
+      document.getElementById('preloader').style.display = 'none';
+      document.body.classList.remove('no-scroll');
+      return;
+    }
+    const tl = gsap.timeline();
+    tl.to('#pfill', { width: '100%', duration: 0.8, ease: 'power1.inOut' })
+      .to('#preloader', { yPercent: -100, duration: 0.5, ease: 'power2.inOut' })
+      .set('#preloader', { display: 'none' })
+      .add(() => {
+        document.body.classList.remove('no-scroll');
+        gsap.from('#header', { autoAlpha: 0, y: -20, duration: 0.5, ease: 'power2.out', clearProps: 'transform,opacity,visibility' });
+        gsap.from('.catalog', { autoAlpha: 0, y: 24, duration: 0.6, ease: 'power2.out', clearProps: 'transform,opacity,visibility' });
+        if (!RM) gsap.from('.support', { autoAlpha: 0, y: 24, duration: 0.6, delay: 0.4, ease: 'back.out(1.6)',
+          clearProps: 'transform,opacity,visibility' });
+      });
+  }
+
+  /* ---------- Dropdown ---------- */
+  const dropBtn = document.getElementById('dropBtn');
+  const drop = document.getElementById('drop');
+  let dropOpen = false, dropTl;
+  function toggleDrop(force) {
+    dropOpen = typeof force === 'boolean' ? force : !dropOpen;
+    dropBtn.classList.toggle('is-open', dropOpen);
+    dropBtn.setAttribute('aria-expanded', String(dropOpen));
+    if (dropTl) dropTl.kill();
+    if (dropOpen) {
+      drop.style.visibility = 'visible';
+      dropTl = gsap.to(drop, { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.4, ease: 'back.out(1.8)' });
+    } else {
+      dropTl = gsap.to(drop, { autoAlpha: 0, y: -10, scale: 0.94, filter: 'blur(3px)', duration: 0.22, ease: 'power1.in',
+        onComplete: () => { drop.style.visibility = 'hidden'; } });
+    }
+  }
+  dropBtn.addEventListener('click', e => { e.stopPropagation(); toggleDrop(); });
+  document.addEventListener('click', e => { if (dropOpen && !drop.contains(e.target)) toggleDrop(false); });
+
+  /* ---------- Wish ---------- */
+  function bindCards() {
+    document.querySelectorAll('.card__wish').forEach(b => {
+      b.addEventListener('click', () => {
+        b.classList.toggle('is-on');
+        gsap.fromTo(b, { scale: 0.7 }, { scale: 1, duration: 0.3, ease: 'back.out(2.5)' });
+        if (b.classList.contains('is-on')) spawnHearts(b);
+      });
+    });
+    document.querySelectorAll('[data-buy]').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); addToCart(btn.closest('[data-card]')); });
+    });
+  }
+  function spawnHearts(btn) {
+    const r = btn.getBoundingClientRect();
+    for (let i = 0; i < 3; i++) {
+      const h = document.createElement('span');
+      h.className = 'mini-heart';
+      h.style.left = r.left + 'px'; h.style.top = r.top + 'px';
+      h.innerHTML = '<svg width="100%" height="100%" viewBox="0 0 24 24"><use href="#ico-heart" fill="#F6A5C0" stroke="#F6A5C0"/></svg>';
+      document.body.appendChild(h);
+      gsap.fromTo(h, { scale: 1 }, { x: (Math.random() * 60 - 30), y: -(40 + Math.random() * 40), opacity: 0, duration: 0.6,
+        ease: 'power2.out', onComplete: () => h.remove() });
+    }
+  }
+
+  /* ---------- Add to cart ---------- */
+  function celebrate() {
+    cartBtn.classList.add('celebrating');
+    gsap.fromTo(cartBtn, { scale: 1 }, { scale: 1.2, duration: 0.16, yoyo: true, repeat: 1, ease: 'power1.out',
+      onComplete: () => cartBtn.classList.remove('celebrating') });
+    gsap.fromTo(badge, { scale: 1.6, y: -8 }, { scale: 1, y: 0, duration: 0.4, ease: 'back.out(3)' });
+    const c = cartBtn.getBoundingClientRect();
+    const midx = c.left + c.width / 2, midy = c.top + c.height / 2;
+    for (let i = 0; i < 16; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti';
+      const size = gsap.utils.random(5, 9);
+      p.style.width = size + 'px'; p.style.height = gsap.utils.random(3, 7) + 'px';
+      p.style.background = palette[i % palette.length];
+      p.style.left = midx + 'px'; p.style.top = midy + 'px';
+      document.body.appendChild(p);
+      const ang = Math.random() * Math.PI * 2, dist = gsap.utils.random(45, 95);
+      gsap.to(p, { x: Math.cos(ang) * dist, y: Math.sin(ang) * dist + 45, rotation: gsap.utils.random(-220, 220),
+        opacity: 0, duration: 0.85, ease: 'power2.out', onComplete: () => p.remove() });
+    }
+    showToast('Товар в корзине — всё учли :)');
+  }
+  function addToCart(card) {
+    const nameEl = card.querySelector('.card__name');
+    const id = nameEl ? BabyCart.idByName(nameEl.textContent.trim()) : '';
+    if (id) BabyCart.add(id, 1);
+    const media = card.querySelector('.card__media');
+    const buy = card.querySelector('[data-buy]');
+    gsap.fromTo(buy, { scale: 0.88 }, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+    const m = media.getBoundingClientRect();
+    const cart = cartBtn.getBoundingClientRect();
+    const cX = m.left + m.width / 2, cY = m.top + m.height / 2;
+    const dx = (cart.left + cart.width / 2) - cX;
+    const dy = (cart.top + cart.height / 2) - cY;
+    const fly = document.createElement('div');
+    fly.className = 'fly';
+    fly.style.left = cX + 'px'; fly.style.top = cY + 'px';
+    fly.innerHTML = '<div class="fly__inner">' + media.outerHTML + '</div>';
+    document.body.appendChild(fly);
+    gsap.set(fly, { x: -48, y: -54 });
+    gsap.set(fly.querySelector('.fly__inner'), { y: 0, scale: 1 });
+    const tl = gsap.timeline({ onComplete: () => { fly.remove(); celebrate(); } });
+    if (RM) {
+      tl.to(fly, { autoAlpha: 0, duration: 0.2 });
+    } else {
+      tl.to(fly, { x: dx + 2, duration: 0.72, ease: 'power1.in' }, 0)
+        .to(fly.querySelector('.fly__inner'), { y: -280, duration: 0.38, ease: 'power2.out' }, 0)
+        .to(fly.querySelector('.fly__inner'), { y: dy, duration: 0.47, ease: 'power2.in' }, 0.34)
+        .to(fly, { scale: 0.12, autoAlpha: 0, duration: 0.72, ease: 'power1.in' }, 0);
+    }
+  }
+
+  /* ---------- Toast ---------- */
+  let toastTl;
+  function showToast(msg) {
+    toast.textContent = msg;
+    if (toastTl) toastTl.kill();
+    toastTl = gsap.timeline();
+    toastTl.to(toast, { xPercent: -50, y: 0, autoAlpha: 1, duration: 0.3, ease: 'back.out(1.8)' })
+      .to(toast, { xPercent: -50, y: 16, autoAlpha: 0, duration: 0.3, delay: 1.8, ease: 'power1.in' });
+  }
+
+  gsap.set(toast, { xPercent: -50, y: 20, autoAlpha: 0 });
+  gsap.registerPlugin(ScrollTrigger);
+  BabyCart.syncBadge();
+
+  if (!RM && lenis) {
+    lenis.on('scroll', () => head.classList.toggle('is-stuck', lenis.scroll > 12));
+  }
+
+  render();
+  markNav();
+  runPreloader();
+})();
+</script>
+</body>
+</html>
