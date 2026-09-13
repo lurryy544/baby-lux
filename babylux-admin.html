@@ -189,13 +189,18 @@
 (function () {
   'use strict';
   const PASSWORD = 'baby2026';
+  function sGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function sSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+  function lGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function lDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
 
-  if (sessionStorage.getItem('babyLuxAdmin') === '1') showPanel();
+  if (sGet('babyLuxAdmin') === '1') showPanel();
 
   document.getElementById('loginBtn').addEventListener('click', () => {
     const v = document.getElementById('pass').value.trim();
     if (v === PASSWORD) {
-      sessionStorage.setItem('babyLuxAdmin', '1');
+      sSet('babyLuxAdmin', '1');
       showPanel();
     } else {
       const e = document.getElementById('err');
@@ -308,7 +313,7 @@
     });
     const js = '/* Baby Lux — данные каталога (сгенерировано из админки). Подключить ПЕРЕД cart.js */\n' +
       'window.BABY_LUX_DATA = ' + JSON.stringify(clean, null, 2) + ';\n' +
-      (localStorage.getItem(LOGO_KEY) ? 'window.BABY_LUX_LOGO = ' + JSON.stringify(localStorage.getItem(LOGO_KEY)) + ';\n' : '');
+      (localStorage.getItem(LOGO_KEY) ? 'window.BABY_LUX_LOGO = ' + JSON.stringify(lGet(LOGO_KEY)) + ';\n' : '');
     const blob = new Blob([js], { type: 'application/javascript' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -379,7 +384,7 @@
   /* ---------- Логотип ---------- */
   const LOGO_KEY = 'babyLuxLogo';
   function showLogoPrev() {
-    const l = localStorage.getItem(LOGO_KEY);
+    const l = lGet(LOGO_KEY);
     const p = document.getElementById('logoPrev');
     if (l) { p.src = l; p.style.display = 'block'; }
     else { p.style.display = 'none'; p.removeAttribute('src'); }
@@ -389,13 +394,13 @@
     const f = e.target.files && e.target.files[0];
     if (!f) return;
     readPhoto(f, d => {
-      localStorage.setItem(LOGO_KEY, d);
+      lSet(LOGO_KEY, d);
       showLogoPrev();
       flash('Логотип обновлён — на сайте теперь новый значок.');
     });
   });
   document.getElementById('logoReset').addEventListener('click', () => {
-    localStorage.removeItem(LOGO_KEY);
+    lDel(LOGO_KEY);
     showLogoPrev();
     flash('Стандартный логотип восстановлен.');
   });
